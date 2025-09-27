@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Chat with <%= otherUser.fullName %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="chat-main-container w-full max-w-4xl bg-gray-800 rounded-lg shadow-lg flex flex-col md:flex-row overflow-hidden">
+        <!-- Left: Student Details -->
+        <div class="w-full md:w-1/3 bg-gray-900 p-6 flex flex-col items-center border-r border-gray-700">
+            <img src="/<%= otherUser.profile_pic || 'uploads/default.jpg' %>" alt="Profile" class="w-28 h-28 rounded-full object-cover border-4 border-blue-500 mb-4" />
+            <h2 class="text-2xl font-bold mb-2"><%= otherUser.fullName %></h2>
+            <p class="text-gray-400 mb-1"><strong>College:</strong> <%= otherUser.collegeName %></p>
+            <p class="text-gray-400 mb-1"><strong>Branch:</strong> <%= otherUser.branch %></p>
+            <p class="text-gray-400 mb-1"><strong>Year:</strong> <%= otherUser.year %></p>
+            <p class="text-gray-400 mb-1"><strong>City:</strong> <%= otherUser.city %></p>
+            <p class="text-gray-400 mb-1"><strong>State:</strong> <%= otherUser.state %></p>
+            <div class="flex gap-3 mt-3">
+                <% if (otherUser.linkedin) { %>
+                    <a href="<%= otherUser.linkedin %>" target="_blank" class="text-blue-400 hover:underline">LinkedIn</a>
+                <% } %>
+                <% if (otherUser.github) { %>
+                    <a href="<%= otherUser.github %>" target="_blank" class="text-blue-400 hover:underline">GitHub</a>
+                <% } %>
+            </div>
+        </div>
+        <!-- Right: Chat Box -->
+        <div class="w-full md:w-2/3 flex flex-col p-6">
+            <h2 class="text-xl font-bold text-center mb-2">Chat: <%= currentUser.fullName %> &amp; <%= otherUser.fullName %></h2>
+            <div class="messages flex-1 space-y-4 overflow-y-auto max-h-[400px] p-2 bg-gray-700 rounded mb-4">
+                <% if (messages && messages.length > 0) { %>
+                    <% messages.forEach(msg => { %>
+                        <div class="msg <%= msg.senderId == currentUser.id ? 'self text-right' : 'text-left' %>">
+                            <div class="inline-block bg-gray-600 rounded px-3 py-2 max-w-[80%]">
+                                <div class="user font-semibold">
+                                    <%= msg.senderId == currentUser.id ? currentUser.fullName : otherUser.fullName %>
+                                </div>
+                                <div class="text mt-1"><%= msg.message %></div>
+                                <div class="time text-xs text-gray-400 mt-1"><%= new Date(msg.createdAt).toLocaleString() %></div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p class="text-center text-gray-400">No messages yet.</p>
+                <% } %>
+            </div>
+            <form id="chatForm" class="flex space-x-2 mt-2">
+                <input type="hidden" id="senderId" value="<%= currentUser.id %>">
+                <input type="hidden" id="receiverId" value="<%= otherUser.id %>">
+                <input type="text" id="messageInput" placeholder="Type your message..." required autocomplete="off"
+                             class="flex-1 p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white font-semibold">Send</button>
+            </form>
+            <div class="text-center mt-4 flex flex-col gap-2">
+                <button onclick="window.location.href='/studentDashboard'" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded text-white font-semibold">Back to Dashboard</button>
+                <button onclick="window.location.href='/exploreStud'" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded text-white font-semibold">Back to Explore</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const socket = io();
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+    const messagesDiv = document.querySelector('.messages');
+    const senderId = document.getElementById('senderId').value;
+    const receiverId = document.getElementById('receiverId').value;
+    const senderName = "<%= currentUser.fullName.replace(/\"/g, '&quot;') %>";
+    const receiverName = "<%= otherUser.fullName.replace(/\"/g, '&quot;') %>";
+
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const msg = messageInput.value.trim();
+        if (!msg) return;
+        socket.emit('student-private-chat', {
+            senderId,
+            receiverId,
+            message: msg
+        });
+        messageInput.value = '';
+    });
+
+    socket.on('student-private-chat', function(data) {
+        // Only display if this chat matches
+        if ((data.senderId == senderId && data.receiverId == receiverId) || (data.senderId == receiverId && data.receiverId == senderId)) {
+            const isSelf = data.senderId == senderId;
+            const user = isSelf ? senderName : receiverName;
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'msg ' + (isSelf ? 'self text-right' : 'text-left');
+            msgDiv.innerHTML = `
+                <div class="inline-block bg-gray-600 rounded px-3 py-2 max-w-[80%]">
+                    <div class="user font-semibold">${user}</div>
+                    <div class="text mt-1">${data.message}</div>
+                    <div class="time text-xs text-gray-400 mt-1">${new Date().toLocaleString()}</div>
+                </div>
+            `;
+            messagesDiv.appendChild(msgDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    });
+</script>
+</html>

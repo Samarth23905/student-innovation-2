@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Register for Fest</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center">
+    <div class="container max-w-2xl w-full p-6 bg-gray-800 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-6 text-center">Register for <%= festName %></h2>
+        <form method="POST" action="/registerFest" class="space-y-4">
+            <input type="hidden" name="fest_id" value="<%= festId %>">
+            <input type="hidden" name="leader_id" value="<%= studentId %>">
+
+            <div class="flex flex-col">
+                <label class="mb-1 font-semibold">Team Name</label>
+                <input type="text" name="team_name" required placeholder="Enter your team name"
+                       class="p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <div class="flex flex-col">
+                <label class="mb-1 font-semibold">Team Size</label>
+                <select name="team_size" id="team_size" onchange="updateMembers()" required
+                        class="p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="4">4</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+
+            <% for(let i=1;i<=6;i++){ %>
+                <div id="member<%=i%>" class="space-y-2 mb-4"<%= i>4 ? ' style="display:none;"' : '' %>>
+                    <label class="block font-semibold">Member <%=i%> Name</label>
+                    <input type="text" name="member<%=i%>_name" placeholder="Enter member name" <%= i<=4 ? 'required' : '' %>
+                           class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+                    <label class="block font-semibold">Member <%=i%> Email</label>
+                    <input type="email" name="member<%=i%>_email" placeholder="Enter member email" <%= i<=4 ? 'required' : '' %>
+                           class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+            <% } %>
+
+            <div class="text-center">
+                <button type="submit"
+                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white font-semibold transition duration-200">Submit Registration</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function updateMembers() {
+            const size = parseInt(document.getElementById('team_size').value);
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById('member'+i).style.display = (i <= size) ? 'block' : 'none';
+            }
+        }
+        updateMembers();
+    </script>
+</body>
+</html>

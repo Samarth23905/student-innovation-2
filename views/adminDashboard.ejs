@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-6 bg-gray-100">
+  <h2 class="text-center text-4xl font-bold text-blue-600">Mentor Approval Dashboard</h2>
+
+  <div class="overflow-x-auto mt-8">
+    <table class="min-w-full bg-white rounded-lg shadow-lg">
+      <thead>
+        <tr class="bg-blue-600 text-white text-left">
+          <th class="px-4 py-3">Profile</th>
+          <th class="px-4 py-3">Name</th>
+          <th class="px-4 py-3">College</th>
+          <th class="px-4 py-3">Experience</th>
+          <th class="px-4 py-3">Expertise</th>
+          <th class="px-4 py-3">LinkedIn</th>
+          <th class="px-4 py-3">GitHub</th>
+          <th class="px-4 py-3">State</th>
+          <th class="px-4 py-3">Live Coding</th>
+          <th class="px-4 py-3">Action</th>
+          <th class="px-4 py-3">Rating</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% mentors.forEach((mentor, idx) => { %>
+        <tr class="border-b hover:bg-gray-50">
+          <td class="px-4 py-3">
+            <img src="/<%= mentor.profile_pic %>" alt="Profile" class="w-12 h-12 rounded-full object-cover border">
+          </td>
+          <td class="px-4 py-3 font-medium text-gray-800"><%= mentor.fullName %></td>
+          <td class="px-4 py-3"><%= mentor.collegeName %></td>
+          <td class="px-4 py-3"><%= mentor.experience %></td>
+          <td class="px-4 py-3"><%= mentor.expertise %></td>
+          <td class="px-4 py-3 text-blue-600 underline">
+            <a href="<%= mentor.linkedin %>" target="_blank">LinkedIn</a>
+          </td>
+          <td class="px-4 py-3 text-gray-800 underline">
+            <a href="<%= mentor.github %>" target="_blank">GitHub</a>
+          </td>
+          <td class="px-4 py-3"><%= mentor.state %></td>
+          <td class="px-4 py-3">
+            <% if (mentor.livecoding) { %>
+              <button onclick="showLiveCoding('<%= idx %>')" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition">View</button>
+            <% } else { %>
+              <span class="text-gray-400 italic">Not submitted</span>
+            <% } %>
+          </td>
+          <td class="px-4 py-3">
+            <form action="/approveMentor" method="POST" class="inline">
+              <input type="hidden" name="mentorId" value="<%= mentor.id %>">
+              <button type="submit" class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition">Approve</button>
+            </form>
+            <form action="/rejectMentor" method="POST" class="inline ml-2">
+              <input type="hidden" name="mentorId" value="<%= mentor.id %>">
+              <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">Reject</button>
+            </form>
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex items-center space-x-1" id="mentor-rating-<%= mentor.id %>">
+              <span class="font-semibold text-yellow-500" id="avg-rating-<%= mentor.id %>">-</span>
+              <span class="text-xs text-gray-600" id="rating-count-<%= mentor.id %>"></span>
+            </div>
+            <div class="flex items-center space-x-1 mt-1">
+              <% for (let star = 1; star <= 5; star++) { %>
+                <span class="star cursor-pointer text-gray-400 hover:text-yellow-400 text-lg" data-mentor="<%= mentor.id %>" data-star="<%= star %>">&#9733;</span>
+              <% } %>
+            </div>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Live Coding Modal -->
+  <div id="liveCodingModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-11/12 relative">
+      <button onclick="closeLiveCoding()" class="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-xl">&times;</button>
+      <h3 class="text-lg font-bold mb-4">Mentor Live Coding Submission</h3>
+      <div id="liveCodingContent" class="text-sm text-gray-800 space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- Hidden mentors data -->
+  <div id="mentors-data" data-mentors='<%- JSON.stringify(mentors) %>' class="hidden"></div>
+
+  <script>
+    var mentors = JSON.parse(document.getElementById('mentors-data').getAttribute('data-mentors'));
+    function showLiveCoding(idx) {
+      var mentor = mentors[idx];
+      var html = '';
+      if (!mentor.livecoding) {
+        html = '<em>No submission found.</em>';
+      } else {
+        var data;
+        try { data = JSON.parse(mentor.livecoding); } catch (e) { data = null; }
+        if (data) {
+          html += `<b>Q1:</b> <pre class="bg-gray-100 p-2 rounded">${data.q1 || ''}</pre>`;
+          html += `<b>Q2:</b> <pre class="bg-gray-100 p-2 rounded">${data.q2 || ''}</pre>`;
+          if (data.backgroundScreenshot) {
+            html += `<b>Background Screenshot:</b><br><img src="/${data.backgroundScreenshot}" class="max-w-full max-h-52 border rounded mb-2"><br>`;
+          }
+          if (data.screenRecording) {
+            html += `<b>Screen Recording:</b><br><video src="/${data.screenRecording}" controls class="max-w-full max-h-60 rounded"></video><br>`;
+          }
+          html += `<small class="text-gray-500">Submitted at: ${data.submittedAt ? new Date(data.submittedAt).toLocaleString() : ''}</small>`;
+        } else {
+          html = '<em>Invalid submission data.</em>';
+        }
+      }
+      document.getElementById('liveCodingContent').innerHTML = html;
+      document.getElementById('liveCodingModal').classList.remove('hidden');
+    }
+    function closeLiveCoding() {
+      document.getElementById('liveCodingModal').classList.add('hidden');
+    }
+    mentors.forEach(m => {
+      fetch(`/api/mentor/averageRating?mentorId=${m.id}`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('avg-rating-' + m.id).textContent = data.avgRating ? data.avgRating.toFixed(1) : '-';
+          document.getElementById('rating-count-' + m.id).textContent = data.count ? `(${data.count})` : '';
+        });
+    });
+    document.querySelectorAll('.star').forEach(starEl => {
+      starEl.addEventListener('click', function() {
+        var mentorId = this.getAttribute('data-mentor');
+        var rating = this.getAttribute('data-star');
+        var studentId = prompt('Enter your Student ID to rate:');
+        if (!studentId) return alert('Student ID required!');
+        fetch('/api/mentor/rate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mentorId, studentId, rating })
+        }).then(res => res.json()).then(data => {
+          if (data.success) {
+            alert('Rating submitted!');
+            fetch(`/api/mentor/averageRating?mentorId=${mentorId}`)
+              .then(res => res.json())
+              .then(data => {
+                document.getElementById('avg-rating-' + mentorId).textContent = data.avgRating ? data.avgRating.toFixed(1) : '-';
+                document.getElementById('rating-count-' + mentorId).textContent = data.count ? `(${data.count})` : '';
+              });
+          } else {
+            alert('Error submitting rating.');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

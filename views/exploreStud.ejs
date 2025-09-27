@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Explore Students</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen font-sans">
+  <div class="max-w-7xl mx-auto px-6 py-10 space-y-8">
+    
+    <!-- Back Button -->
+    <div class="flex justify-center">
+      <button onclick="window.location.href='/studentDashboard'"
+        class="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 rounded-lg text-white font-semibold shadow transition-all duration-300">
+        ⬅ Back to Dashboard
+      </button>
+    </div>
+
+    <!-- Title -->
+    <h2 class="text-3xl font-extrabold text-center text-white tracking-wide">
+      🌐 Explore Students
+    </h2>
+
+    <!-- Search -->
+    <div class="flex justify-center">
+      <input type="text" id="techSearch" placeholder="🔍 Search by Tech Stack..."
+        class="p-3 rounded-lg border border-gray-600 w-full max-w-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none transition" />
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto rounded-xl shadow-lg border border-gray-700">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gradient-to-r from-gray-800 to-gray-700">
+          <tr>
+            <th class="px-4 py-3 text-left font-semibold">Name</th>
+            <th class="px-4 py-3 text-left font-semibold">Email</th>
+            <th class="px-4 py-3 text-left font-semibold">College</th>
+            <th class="px-4 py-3 text-left font-semibold">Branch</th>
+            <th class="px-4 py-3 text-left font-semibold">Year</th>
+            <th class="px-4 py-3 text-left font-semibold">City</th>
+            <th class="px-4 py-3 text-left font-semibold">State</th>
+            <th class="px-4 py-3 text-left font-semibold">Tech Stack</th>
+            <th class="px-4 py-3 text-left font-semibold">Badges</th>
+            <th class="px-4 py-3 text-left font-semibold">Mentor Badges</th>
+            <th class="px-4 py-3 text-left font-semibold">LinkedIn</th>
+            <th class="px-4 py-3 text-left font-semibold">GitHub</th>
+            <th class="px-4 py-3 text-left font-semibold">Progress</th>
+          </tr>
+        </thead>
+        <tbody class="bg-gray-800 divide-y divide-gray-700">
+          <% if (students && students.length > 0) { %>
+            <% students.forEach(stud => { var safeName = stud.fullName.replace(/'/g, "\\'"); %>
+            <tr class="hover:bg-gray-700 hover:scale-[1.01] transition transform duration-200 cursor-pointer student-row"
+                data-student-id="<%= stud.id %>"
+                data-current-user="<%= currentUserId %>">
+              <td class="px-4 py-2 font-medium"><%= stud.fullName %></td>
+              <td class="px-4 py-2"><%= stud.email %></td>
+              <td class="px-4 py-2"><%= stud.collegeName %></td>
+              <td class="px-4 py-2"><%= stud.branch %></td>
+              <td class="px-4 py-2"><%= stud.year %></td>
+              <td class="px-4 py-2"><%= stud.city %></td>
+              <td class="px-4 py-2"><%= stud.state %></td>
+              <td class="px-4 py-2">
+                <% if (stud.completedLanguages && stud.completedLanguages.length > 0) { %>
+                  <%= stud.completedLanguages.join(', ') %>
+                <% } else { %>
+                  <%= stud.techStack || '-' %>
+                <% } %>
+              </td>
+              <td class="px-4 py-2">
+                <% if (stud.badges && stud.badges.length > 0) { %>
+                  <% stud.badges.forEach(badge => { %>
+                    <span class="inline-block bg-yellow-400 text-black px-2 py-1 rounded-full mr-1 mb-1 text-xs font-semibold shadow">
+                      <%= badge.language ? badge.language + ':' : '' %> <%= badge.badge_name %>
+                    </span>
+                  <% }) %>
+                <% } else { %>
+                  <span class="text-gray-400">—</span>
+                <% } %>
+              </td>
+              <td class="px-4 py-2">
+                <% if (stud.mentorBadges && stud.mentorBadges.length > 0) { %>
+                  <% stud.mentorBadges.forEach(badge => { %>
+                    <span class="inline-block bg-green-400 text-black px-2 py-1 rounded-full mr-1 mb-1 text-xs font-semibold shadow">
+                      <%= badge.badge_name %>
+                    </span>
+                  <% }) %>
+                <% } else { %>
+                  <span class="text-gray-400">—</span>
+                <% } %>
+              </td>
+              <td class="px-4 py-2">
+                <% if (stud.linkedin) { %>
+                  <a href="<%= stud.linkedin %>" target="_blank" class="text-blue-400 hover:underline hover:text-blue-300 transition">LinkedIn</a>
+                <% } %>
+              </td>
+              <td class="px-4 py-2">
+                <% if (stud.github) { %>
+                  <a href="<%= stud.github %>" target="_blank" class="text-blue-400 hover:underline hover:text-blue-300 transition">GitHub</a>
+                <% } %>
+              </td>
+              <td class="px-4 py-2">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg shadow view-progress-btn transition"
+                        data-id="<%= stud.id %>"
+                        data-name="<%= safeName %>">
+                  View
+                </button>
+              </td>
+            </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="13" class="px-4 py-6 text-center text-gray-400">No students found 🚫</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Progress Modal -->
+    <div id="progressModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+      <div class="bg-gray-900 p-6 rounded-2xl w-full max-w-3xl shadow-2xl relative">
+        <button onclick="document.getElementById('progressModal').classList.add('hidden')"
+          class="absolute top-3 right-3 text-2xl hover:text-red-500 transition">&times;</button>
+        <h2 class="text-2xl font-bold mb-6 text-center text-white" id="progressModalTitle">Student Progress</h2>
+        <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
+          <canvas id="progressModalGraph" height="300"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Tech stack search
+    document.getElementById('techSearch').addEventListener('input', function() {
+      const val = this.value.trim().toLowerCase();
+      document.querySelectorAll('tbody tr').forEach(row => {
+        const techCell = row.querySelector('td:nth-child(8)');
+        if (!techCell) return;
+        const tech = techCell.textContent.toLowerCase();
+        row.style.display = tech.includes(val) ? '' : 'none';
+      });
+    });
+
+    // Row click → Chat
+    document.addEventListener("click", function(e) {
+      const row = e.target.closest(".student-row");
+      if (row && !e.target.classList.contains("view-progress-btn") && e.target.tagName !== 'A') {
+        const studentId = row.getAttribute("data-student-id");
+        const currentUserId = row.getAttribute("data-current-user");
+        window.location.href = `/studentChat/${studentId}?currentUserId=${currentUserId}`;
+      }
+    });
+
+    // View Progress
+    document.addEventListener("click", function(e) {
+      if (e.target.classList.contains("view-progress-btn")) {
+        e.stopPropagation();
+        const studentId = e.target.getAttribute("data-id");
+        const studentName = e.target.getAttribute("data-name");
+        showProgressModal(studentId, studentName);
+      }
+    });
+
+    function showProgressModal(studentId, studentName) {
+      const modal = document.getElementById('progressModal');
+      modal.classList.remove('hidden');
+      document.getElementById('progressModalTitle').textContent = studentName + " — Progress";
+      fetch(`/api/mentor/studentProgress?mentorId=0&studentId=${studentId}`)
+        .then(res => res.json())
+        .then(data => {
+          const graphData = data.graphData || [];
+          const labels = graphData.map(d => d.week);
+          const assignments = graphData.map(d => d.assignments);
+          const quizzes = graphData.map(d => d.quizzes);
+          const statusColors = graphData.map(d => d.status === 'Good' ? 'rgba(34,197,94,0.7)' : 'rgba(239,68,68,0.7)');
+          if (window.progressModalChart) window.progressModalChart.destroy();
+          const ctx = document.getElementById('progressModalGraph').getContext('2d');
+          window.progressModalChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels,
+              datasets: [
+                { label: 'Assignments Completed', data: assignments, backgroundColor: statusColors },
+                { label: 'Quizzes Passed', data: quizzes, backgroundColor: 'rgba(59,130,246,0.7)' }
+              ]
+            },
+            options: {
+              indexAxis: 'y',
+              scales: { x: { beginAtZero: true }, y: { title: { display: true, text: 'Week Slot' } } },
+              plugins: { legend: { position: 'top' }, title: { display: true, text: 'Performance Status (Good/Bad)' } }
+            }
+          });
+        });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-100">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="max-w-5xl mx-auto my-8 bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center gap-4 mb-6">
+            <img src="/<%= studentProfilePic && studentProfilePic !== '' ? studentProfilePic : 'uploads/default.jpg' %>" alt="Profile" class="w-16 h-16 rounded-full object-cover" />
+            <span class="text-xl font-bold"><%= studentName %></span>
+        </div>
+
+
+        <div class="flex gap-4 mb-6">
+            <button class="tab-btn bg-gray-300 text-gray-700 px-4 py-2 rounded-md font-semibold active" data-target="mentorsSection">Mentors</button>
+            <button class="tab-btn bg-gray-300 text-gray-700 px-4 py-2 rounded-md font-semibold" data-target="festsSection">College Fests</button>
+            <button class="tab-btn bg-gray-300 text-gray-700 px-4 py-2 rounded-md font-semibold" data-target="quizSection">Attend Quiz / Coding Challenge</button>
+            <button class="tab-btn bg-gray-300 text-gray-700 px-4 py-2 rounded-md font-semibold" data-target="leaderboardSection">Leaderboard</button>
+            <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" onclick="window.location.href='/studentsChat'">Join Students Group Chat</button>
+            <% let exploreUrl = '/exploreStud' + (currentUserId ? ('?currentUserId=' + currentUserId) : ''); %>
+            <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" id="exploreBtn" onclick="window.location.href='<%= exploreUrl %>'">Explore Students</button>
+        </div>
+
+        <!-- Attend Quiz / Coding Challenge Section (tab) -->
+        <div id="quizSection" class="section hidden">
+            <h2 class="text-2xl font-bold mb-4">Attend Quiz / Coding Challenge</h2>
+            <div id="quizPassFailMsg" class="mb-4 text-lg font-semibold text-green-600"></div>
+            <div class="flex gap-4 mb-4">
+                <select id="quizTypeFilter" class="p-2 border rounded-md">
+                    <option value="">All Types</option>
+                    <option value="quiz">Quiz</option>
+                    <option value="coding">Coding Challenge</option>
+                </select>
+                <select id="quizLangFilter" class="p-2 border rounded-md">
+                    <option value="">All Languages</option>
+                    <% if (quizLanguages && quizLanguages.length > 0) { %>
+                        <% quizLanguages.forEach(function(lang) { %>
+                            <option value="<%= lang %>"><%= lang %></option>
+                        <% }) %>
+                    <% } %>
+                </select>
+            </div>
+            <form id="allQuizForm">
+                <div id="quizList">
+                    <% if (quizzes && quizzes.length > 0) { %>
+                        <% quizzes.forEach(function(quiz, qidx) { %>
+                            <div class="quiz-item mb-6 p-4 border rounded-lg bg-gray-50" data-type="<%= quiz.type %>" data-lang="<%= quiz.language %>" data-quiz-id="<%= quiz.id %>">
+                                <h3 class="font-semibold mb-2"><%= quiz.question %></h3>
+                                <% [quiz.option1, quiz.option2, quiz.option3, quiz.option4].forEach(function(opt, idx) { %>
+                                    <div class="mb-2">
+                                        <label class="flex items-center">
+                                            <input type="radio" name="quiz_<%= quiz.id %>" value="<%= idx+1 %>" class="option-radio mr-2" />
+                                            <span><%= opt %></span>
+                                        </label>
+                                    </div>
+                                <% }) %>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p class="text-gray-600">No quizzes or coding challenges assigned yet.</p>
+                    <% } %>
+                </div>
+                <% if (quizzes && quizzes.length > 0) { %>
+                    <button type="submit" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Submit All</button>
+                <% } %>
+            </form>
+        </div>
+
+
+
+        <div class="my-4 flex gap-4">
+            <button id="viewAssignedBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">View Assigned Work & Resources</button>
+            <button id="viewMyMentorBtn" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700" onclick="window.location.href='/viewMentors'">View My Mentor</button>
+        </div>
+
+        <!-- Assigned Modal -->
+        <div id="assignedModal" class="hidden fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg w-11/12 max-w-2xl relative max-h-[90vh] overflow-y-auto">
+                <button id="closeAssignedModalBtn" class="absolute top-4 right-4 text-xl">&times;</button>
+                <h2 class="text-lg font-bold mb-4">Assigned Work</h2>
+                <div id="assignedWorkList" class="text-gray-600">Loading...</div>
+                <h2 class="text-lg font-bold mt-6 mb-4">Resources Shared by Mentors</h2>
+                <div id="mentorResourceList" class="text-gray-600">Loading...</div>
+                <hr class="my-6" />
+                <h2 class="text-lg font-bold mb-4">Upload Assignment/Project for Your Mentor</h2>
+                <form id="uploadAssignmentForm" method="POST" action="/uploadAssignment" enctype="multipart/form-data" class="flex flex-col gap-3">
+                    <input type="hidden" name="studentId" value="<%= currentUserId %>">
+                    <input type="hidden" name="mentorId" id="uploadMentorId" value="">
+                    <input type="text" name="title" placeholder="Assignment Title" required class="p-2 border rounded-md" />
+                    <input type="text" name="description" placeholder="Description (optional)" class="p-2 border rounded-md" />
+                    <input type="file" name="assignmentFile" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip,.rar,.png,.jpg,.jpeg" required class="border rounded-md p-2" />
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Upload</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Mentors Section -->
+        <div id="mentorsSection" class="section block">
+                <!-- AI Predicted Mentors Section -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold mb-2 text-green-600">AI Recommended Top Mentors</h2>
+                    <div id="aiPredictedMentors" class="bg-gray-100 border rounded p-4">
+                        <em>Loading mentor predictions...</em>
+                    </div>
+                </div>
+            <h2 class="text-xl font-bold mb-4">Available Mentors</h2>
+            <input type="text" id="mentorSearch" placeholder="Search Mentor by name, state, or expertise..." class="p-2 border rounded-md w-full max-w-md mb-4" />
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <% if (mentors && mentors.length > 0) { %>
+                    <% mentors.forEach(mentor => { %>
+                        <div class="mentor-card bg-gray-50 border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow" data-name="<%= (mentor.fullName || '').toLowerCase() %>" data-tech="<%= (mentor.expertise || '').toLowerCase() %>" data-state="<%= (mentor.state || '').toLowerCase() %>">
+                            <img src="/<%= mentor.profile_pic && mentor.profile_pic !== '' ? mentor.profile_pic : 'uploads/default.jpg' %>" alt="Mentor" class="w-20 h-20 rounded-full object-cover mx-auto mb-4" />
+                            <h3 class="text-lg font-semibold text-center mb-2"><%= mentor.fullName %></h3>
+                            <p><strong>College:</strong> <%= mentor.collegeName %></p>
+                            <p><strong>Expertise:</strong> <%= mentor.expertise %></p>
+                            <p><strong>State:</strong> <%= mentor.state %></p>
+                            <p><strong>Experience:</strong> <%= mentor.experience %> years</p>
+                            <p><strong>Rating:</strong> <span class="font-semibold text-yellow-500">
+                                <% if (mentor.avgRating) { %>
+                                    <%= Number(mentor.avgRating).toFixed(2) %> &#9733; (<%= mentor.ratingCount %> ratings)
+                                <% } else { %>
+                                    No ratings yet
+                                <% } %>
+                            </span></p>
+                            <div class="text-center mt-3 space-x-2">
+                                <a href="<%= mentor.linkedin %>" target="_blank" class="text-blue-600 hover:underline">LinkedIn</a>
+                                <a href="<%= mentor.github %>" target="_blank" class="text-blue-600 hover:underline">GitHub</a>
+                            </div>
+                            <div class="mt-4 flex justify-between">
+                                <form method="POST" action="/chooseMentor">
+                                    <input type="hidden" name="studentId" value="<%= currentUserId %>">
+                                    <input type="hidden" name="mentorId" value="<%= mentor.id %>">
+                                    <button type="submit" class="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700">Choose</button>
+                                </form>
+                                <a href="/student-mentorChat/<%= mentor.id %>?studentId=<%= currentUserId %>"
+                                   class="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700">Chat</a>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p class="text-gray-600">No mentors available at the moment.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- College Fests Section -->
+        <div id="festsSection" class="section hidden">
+            <h2 class="text-xl font-bold mb-4">College Fests</h2>
+            <div class="flex gap-2 items-center mb-4">
+                <input type="text" id="festSearch" placeholder="Search Tech Fest by name..." class="p-2 border rounded-md w-full max-w-sm" />
+                <select id="festDropdown" class="p-2 border rounded-md">
+                    <option value="">Select Fest</option>
+                    <% fests.forEach(fest => { %>
+                        <option value="<%= fest.festName %>"><%= fest.festName %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <% if (fests && fests.length > 0) { %>
+                    <% fests.forEach(fest => { %>
+                        <div class="fest-card bg-gray-50 border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow" data-name="<%= (fest.festName || '').toLowerCase() %>" data-state="<%= (fest.state || '').toLowerCase() %>">
+                            <img src="/<%= fest.logo && fest.logo !== '' && fest.logo !== 'uploads/default.jpg' ? fest.logo : 'uploads/default.jpg' %>" alt="Fest Logo" class="w-20 h-20 mx-auto rounded-full object-cover mb-4" />
+                            <h3 class="text-lg font-semibold text-center mb-2"><%= fest.festName %></h3>
+                            <p><strong>College:</strong> <%= fest.collegeName %></p>
+                            <p><strong>Affiliation:</strong> <%= fest.affiliation %></p>
+                            <p><strong>Edition:</strong> <%= fest.edition %></p>
+                            <p><strong>Start Date:</strong> <%= fest.startDate %></p>
+                            <p><strong>End Date:</strong> <%= fest.endDate %></p>
+                            <p><strong>Venue:</strong> <%= fest.venue %></p>
+                            <p><strong>Pincode:</strong> <%= fest.pincode %></p>
+                            <p><strong>Contact Person:</strong> <%= fest.contactPerson %></p>
+                            <p><strong>Designation:</strong> <%= fest.designation %></p>
+                            <p><strong>Email:</strong> <a href="mailto:<%= fest.email %>" class="text-blue-600 hover:underline"><%= fest.email %></a></p>
+                            <p><strong>Phone:</strong> <a href="tel:<%= fest.phone %>" class="text-blue-600 hover:underline"><%= fest.phone %></a></p>
+                            <p><strong>Website:</strong> <a href="<%= fest.website %>" target="_blank" class="text-blue-600 hover:underline"><%= fest.website %></a></p>
+                            <p><strong>Registration Link:</strong> <a href="<%= fest.registrationLink %>" target="_blank" class="text-blue-600 hover:underline"><%= fest.registrationLink %></a></p>
+                            <p><strong>Instagram:</strong> <a href="<%= fest.instagram %>" target="_blank" class="text-blue-600 hover:underline"><%= fest.instagram %></a></p>
+                            <p><strong>Twitter:</strong> <a href="<%= fest.twitter %>" target="_blank" class="text-blue-600 hover:underline"><%= fest.twitter %></a></p>
+                            <p><strong>Expected Participants:</strong> <%= fest.expectedParticipants %></p>
+                            <p><strong>Scale:</strong> <%= fest.scale %></p>
+                            <p><strong>Mode:</strong> <%= fest.mode %></p>
+                            <p><strong>Description:</strong> <%= fest.description %></p>
+                            <% if (fest.brochure) { %>
+                                <p><a href="/<%= fest.brochure %>" target="_blank" class="text-blue-600 hover:underline">View Brochure</a></p>
+                            <% } %>
+                            <button onclick="window.location.href='/registerFest?festId=<%= fest.id %>&studentId=<%= currentUserId %>'" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 mt-2">Take Part in this Fest</button>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p class="text-gray-600">No college fests available at the moment.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Leaderboard Section (tab) -->
+        <div id="leaderboardSection" class="section hidden">
+            <h2 class="text-2xl font-bold mb-4">Student Leaderboard (by Badges)</h2>
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead>
+                    <tr>
+                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Badges Earned</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <% if (leaderboard && leaderboard.length > 0) { %>
+                        <% leaderboard.forEach(function(entry) { %>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap"><%= entry.name %></td>
+                                <td class="px-6 py-4 whitespace-nowrap"><%= entry.badgeCount %></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="2" class="px-6 py-4 text-center text-gray-500">No leaderboard data available.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <form action="/logout" method="post">
+            <button class="mt-6 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">Logout</button>
+        </form>
+    </div>
+
+    <script>
+            // Fetch and display AI predicted mentors
+            fetch('/student/predict/<%= currentUserId %>')
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('aiPredictedMentors');
+                    if (!data || !data.mentor_recommendations || !Array.isArray(data.mentor_recommendations) || !data.mentor_recommendations.length) {
+                        container.innerHTML = '<em>No mentor recommendations available.</em>';
+                        return;
+                    }
+                    let html = '<table class="min-w-full divide-y divide-gray-200 text-sm"><thead><tr><th>Name</th><th>Expertise</th><th>Rating</th><th>Feedback</th></tr></thead><tbody class="divide-y divide-gray-200">';
+                    data.mentor_recommendations.forEach(mentor => {
+                        html += `<tr><td>${mentor.name}</td><td>${mentor.expertise}</td><td>${mentor.rating}</td><td>${mentor.feedback}</td></tr>`;
+                    });
+                    html += '</tbody></table>';
+                    container.innerHTML = html;
+                })
+                .catch(() => {
+                    document.getElementById('aiPredictedMentors').innerHTML = '<em>Error loading mentor recommendations.</em>';
+                });
+        // Tab switching logic
+        const tabs = document.querySelectorAll(".tab-btn");
+        const sections = document.querySelectorAll(".section");
+        tabs.forEach(tab => {
+            if (tab) {
+                tab.addEventListener("click", () => {
+                    tabs.forEach(btn => btn.classList.remove("active"));
+                    sections.forEach(sec => sec.classList.add("hidden"));
+                    tab.classList.add("active");
+                    var targetSection = document.getElementById(tab.dataset.target);
+                    if (targetSection) targetSection.classList.remove("hidden");
+                });
+            }
+        });
+
+
+        // View My Mentor Section Logic
+        fetch('/myMentorAssignments?studentId=<%= currentUserId %>')
+            .then(res => res.json())
+            .then(data => {
+                if (data.length && data[0].mentorId) {
+                    // Fetch mentor info
+                    fetch(`/api/mentor/profile?mentorId=${data[0].mentorId}`)
+                        .then(res => res.json())
+                        .then(mentor => {
+                            let html = '';
+                            html += `<img src="/${mentor.profile_pic || 'uploads/default.jpg'}" alt="Mentor" class="w-20 h-20 rounded-full object-cover" />`;
+                            html += `<div><h3 class="text-lg font-semibold mb-2">${mentor.fullName}</h3>`;
+                            html += `<p><strong>College:</strong> ${mentor.collegeName || ''}</p>`;
+                            html += `<p><strong>Expertise:</strong> ${mentor.expertise || ''}</p>`;
+                            html += `<div class="mt-2 flex gap-2">`;
+                            html += `<form method="GET" action="/student-mentorChat/${mentor.id}"><input type="hidden" name="studentId" value="<%= currentUserId %>"><button type="submit" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">Chat</button></form>`;
+                            html += `</div>`;
+                            // Rating section
+                            html += `<div class="mt-4"><h4 class="font-bold mb-1">Rate Your Mentor</h4>`;
+                            html += `<form id="mentorRatingForm" class="flex items-center gap-2">
+                                <input type="hidden" name="studentId" value="<%= currentUserId %>">
+                                <input type="hidden" name="mentorId" value="${mentor.id}">
+                                <span class="mr-2">Your Rating:</span>
+                                <span id="starRating" class="flex gap-1 text-2xl cursor-pointer">
+                                    <span data-value="1">&#9733;</span>
+                                    <span data-value="2">&#9733;</span>
+                                    <span data-value="3">&#9733;</span>
+                                    <span data-value="4">&#9733;</span>
+                                    <span data-value="5">&#9733;</span>
+                                </span>
+                                <input type="hidden" name="rating" id="mentorRatingValue" value="0">
+                                <button type="submit" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Submit Rating</button>
+                            </form>
+                            <div id="mentorRatingFeedback" class="mt-2 text-green-600 font-semibold"></div>
+                            <div id="mentorAverageRating" class="mt-2 text-gray-700"></div></div>`;
+                            html += `</div>`;
+                            var myMentorCardEl = document.getElementById('myMentorCard');
+                            if (myMentorCardEl) myMentorCardEl.innerHTML = html;
+
+                            // Rating logic
+                            function setMentorRatingStars(rating) {
+                                document.querySelectorAll('#starRating span').forEach(star => {
+                                    star.style.color = (parseInt(star.dataset.value) <= rating) ? '#FFD700' : '#ccc';
+                                });
+                            }
+                            let selectedRating = 0;
+                            document.querySelectorAll('#starRating span').forEach(star => {
+                                star.addEventListener('click', function() {
+                                    selectedRating = parseInt(this.dataset.value);
+                                    document.getElementById('mentorRatingValue').value = selectedRating;
+                                    setMentorRatingStars(selectedRating);
+                                });
+                            });
+                            // Fetch average rating
+                            fetch(`/api/mentor/averageRating?mentorId=${mentor.id}`)
+                                .then(res => res.json())
+                                .then(ratingData => {
+                                    if (ratingData.count > 0) {
+                                        var mentorAverageRatingEl = document.getElementById('mentorAverageRating');
+                                        if (mentorAverageRatingEl) mentorAverageRatingEl.innerHTML = `Average Rating: <span style=\"color:#FFD700\">${Number(ratingData.avgRating).toFixed(2)} &#9733;</span> (${ratingData.count} ratings)`;
+                                    } else {
+                                        var mentorAverageRatingEl2 = document.getElementById('mentorAverageRating');
+                                        if (mentorAverageRatingEl2) mentorAverageRatingEl2.innerHTML = 'No ratings yet.';
+                                    }
+                                });
+                            // Handle rating form submit
+                            var mentorRatingFormEl = document.getElementById('mentorRatingForm');
+                            if (mentorRatingFormEl) mentorRatingFormEl.addEventListener('submit', function(e) {
+                                e.preventDefault();
+                                const mentorId = mentor.id;
+                                const studentId = '<%= currentUserId %>';
+                                const rating = document.getElementById('mentorRatingValue').value;
+                                if (!mentorId || !studentId || !rating || rating < 1 || rating > 5) {
+                                    document.getElementById('mentorRatingFeedback').textContent = 'Please select a rating.';
+                                    document.getElementById('mentorRatingFeedback').style.color = 'red';
+                                    return;
+                                }
+                                fetch('/api/mentor/rate', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ mentorId, studentId, rating })
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    document.getElementById('mentorRatingFeedback').textContent = 'Rating submitted!';
+                                    document.getElementById('mentorRatingFeedback').style.color = 'green';
+                                    // Refresh average rating
+                                    fetch(`/api/mentor/averageRating?mentorId=${mentorId}`)
+                                        .then(res => res.json())
+                                        .then(ratingData => {
+                                            if (ratingData.count > 0) {
+                                                var mentorAverageRatingEl3 = document.getElementById('mentorAverageRating');
+                                                if (mentorAverageRatingEl3) mentorAverageRatingEl3.innerHTML = `Average Rating: <span style=\"color:#FFD700\">${Number(ratingData.avgRating).toFixed(2)} &#9733;</span> (${ratingData.count} ratings)`;
+                                            } else {
+                                                var mentorAverageRatingEl4 = document.getElementById('mentorAverageRating');
+                                                if (mentorAverageRatingEl4) mentorAverageRatingEl4.innerHTML = 'No ratings yet.';
+                                            }
+                                        });
+                                })
+                                .catch(() => {
+                                    document.getElementById('mentorRatingFeedback').textContent = 'Error submitting rating.';
+                                    document.getElementById('mentorRatingFeedback').style.color = 'red';
+                                });
+                            });
+                        });
+                } else {
+                    var myMentorCardEl2 = document.getElementById('myMentorCard');
+                    if (myMentorCardEl2) myMentorCardEl2.innerHTML = '<em>No mentor assigned yet.</em>';
+                }
+            });
+
+        // Mentor search filter
+        const mentorSearch = document.getElementById('mentorSearch');
+    if (mentorSearch) mentorSearch.addEventListener('input', function() {
+            const val = this.value.trim().toLowerCase();
+            document.querySelectorAll('.mentor-card').forEach(card => {
+                const name = card.getAttribute('data-name');
+                const tech = card.getAttribute('data-tech');
+                const state = card.getAttribute('data-state');
+                if (name.includes(val) || tech.includes(val) || state.includes(val)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Fest search filter
+        const festSearch = document.getElementById('festSearch');
+        const festDropdown = document.getElementById('festDropdown');
+    if (festSearch) festSearch.addEventListener('input', function() {
+            const val = this.value.trim().toLowerCase();
+            document.querySelectorAll('.fest-card').forEach(card => {
+                const name = card.getAttribute('data-name');
+                if (name.includes(val)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            festDropdown.value = "";
+        });
+    if (festDropdown) festDropdown.addEventListener('change', function() {
+            const val = this.value.trim().toLowerCase();
+            document.querySelectorAll('.fest-card').forEach(card => {
+                const name = card.getAttribute('data-name');
+                if (!val || name === val) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            festSearch.value = this.value;
+        });
+
+        // Quiz type/language filter logic
+    var quizTypeFilterEl = document.getElementById('quizTypeFilter');
+    if (quizTypeFilterEl) quizTypeFilterEl.addEventListener('change', filterQuizzes);
+    var quizLangFilterEl = document.getElementById('quizLangFilter');
+    if (quizLangFilterEl) quizLangFilterEl.addEventListener('change', filterQuizzes);
+        function filterQuizzes() {
+            const type = document.getElementById('quizTypeFilter').value;
+            const lang = document.getElementById('quizLangFilter').value;
+            document.querySelectorAll('.quiz-item').forEach(item => {
+                const matchesType = !type || item.getAttribute('data-type') === type;
+                const matchesLang = !lang || item.getAttribute('data-lang') === lang;
+                item.style.display = (matchesType && matchesLang) ? '' : 'none';
+            });
+        }
+
+        // Quiz answer submission and feedback
+        const allQuizForm = document.getElementById('allQuizForm');
+        if (allQuizForm) {
+            allQuizForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const quizItems = document.querySelectorAll('.quiz-item');
+                const answers = [];
+                quizItems.forEach(item => {
+                    const quizId = item.getAttribute('data-quiz-id');
+                    const selected = item.querySelector('input[type="radio"]:checked');
+                    if (selected) {
+                        answers.push({ questionId: quizId, selectedOption: selected.value });
+                    }
+                });
+                if (answers.length !== quizItems.length) {
+                    document.getElementById('quizPassFailMsg').textContent = 'Please answer all questions.';
+                    document.getElementById('quizPassFailMsg').style.color = 'red';
+                    return;
+                }
+                // Assume all questions are from the same quiz set (use first quiz id for backend)
+                const quizId = answers[0].questionId;
+                const res = await fetch('/student/attemptQuiz', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ quiz_id: quizId, answers })
+                });
+                const data = await res.json();
+                if (data.is_passed) {
+                    document.getElementById('quizPassFailMsg').textContent = data.message || 'You passed the quiz!';
+                    document.getElementById('quizPassFailMsg').style.color = 'green';
+                    allQuizForm.style.display = 'none';
+                } else {
+                    document.getElementById('quizPassFailMsg').textContent = data.message || 'You did not pass.';
+                    document.getElementById('quizPassFailMsg').style.color = 'red';
+                }
+            });
+        }
+
+        // Assigned Work & Resources Modal
+        var viewAssignedBtnEl = document.getElementById('viewAssignedBtn');
+        if (viewAssignedBtnEl) viewAssignedBtnEl.onclick = function() {
+            var assignedModalEl = document.getElementById('assignedModal');
+            if (assignedModalEl) assignedModalEl.style.display = 'flex';
+            // Fetch all assignments for this student (mentor-assigned and self-uploaded)
+            fetch('/assignments?studentId=<%= currentUserId %>')
+                .then(res => res.json())
+                .then(data => {
+                    let html = '';
+                    if (!data.length) html = '<em>No assigned work yet.</em>';
+                    else {
+                        html = '<table style="width:100%;margin-top:10px;"><tr><th>Title</th><th>Description</th><th>Mentor</th><th>File</th><th>Uploaded</th></tr>';
+                        data.forEach(a => {
+                            html += `<tr><td>${a.title}</td><td>${a.description||''}</td><td>${a.mentorName||'Self'}</td><td><a href="/${a.file_path}" target="_blank">Download</a></td><td>${a.uploaded_at ? new Date(a.uploaded_at).toLocaleString() : ''}</td></tr>`;
+                        });
+                        html += '</table>';
+                    }
+                    var assignedWorkListEl = document.getElementById('assignedWorkList');
+                    if (assignedWorkListEl) assignedWorkListEl.innerHTML = html;
+                    // Set mentorId for upload form if available (find first assignment with mentorId)
+                    const mentorAssignment = data.find(a => a.mentorId);
+                    if (mentorAssignment && mentorAssignment.mentorId) {
+                        document.getElementById('uploadMentorId').value = mentorAssignment.mentorId;
+                    } else {
+                        document.getElementById('uploadMentorId').value = '';
+                    }
+                })
+                .catch(() => { var assignedWorkListEl2 = document.getElementById('assignedWorkList'); if (assignedWorkListEl2) assignedWorkListEl2.innerHTML = '<em>Error loading assigned work.</em>'; });
+            // Fetch mentor resources
+            fetch('/resources')
+                .then(res => res.json())
+                .then(data => {
+                    let html = '';
+                    if (!data.length) html = '<em>No resources shared yet.</em>';
+                    else {
+                        html = '<table style="width:100%;margin-top:10px;"><tr><th>Title</th><th>Description</th><th>Mentor</th><th>File</th><th>Uploaded</th></tr>';
+                        data.forEach(r => {
+                            html += `<tr><td>${r.title}</td><td>${r.description||''}</td><td>${r.mentorName||''}</td><td><a href="/${r.file_path}" target="_blank">Download</a></td><td>${r.uploaded_at ? new Date(r.uploaded_at).toLocaleString() : ''}</td></tr>`;
+                        });
+                        html += '</table>';
+                    }
+                    var mentorResourceListEl = document.getElementById('mentorResourceList');
+                    if (mentorResourceListEl) mentorResourceListEl.innerHTML = html;
+                })
+                .catch(() => { var mentorResourceListEl2 = document.getElementById('mentorResourceList'); if (mentorResourceListEl2) mentorResourceListEl2.innerHTML = '<em>Error loading resources.</em>'; });
+        };
+
+        // Fetch and display only assignments from the student's assigned mentor
+        fetch('/myMentorAssignments?studentId=<%= currentUserId %>')
+            .then(res => res.json())
+            .then(data => {
+                if (!data.length) {
+                    var myMentorAssignmentsEl = document.getElementById('myMentorAssignments');
+                    if (myMentorAssignmentsEl) myMentorAssignmentsEl.innerHTML = '<em>No assignments from your mentor yet.</em>';
+                    var mentorAssignedByEl = document.getElementById('mentorAssignedBy');
+                    if (mentorAssignedByEl) mentorAssignedByEl.innerHTML = '';
+                    return;
+                }
+                // Assume all assignments are from the same mentor (the assigned mentor)
+                const mentorName = data[0].mentorName || '';
+                var mentorAssignedByEl2 = document.getElementById('mentorAssignedBy');
+                if (mentorAssignedByEl2) mentorAssignedByEl2.innerHTML = mentorName ? `Assigned by Mentor: <span style=\"color:#1976d2\">${mentorName}</span>` : '';
+                let html = '<table style="width:100%;margin-top:10px;"><tr><th>Title</th><th>Description</th><th>File</th><th>Uploaded</th></tr>';
+                data.forEach(a => {
+                    html += `<tr><td>${a.title}</td><td>${a.description||''}</td><td><a href="/${a.file_path}" target="_blank">Download</a></td><td>${new Date(a.uploaded_at).toLocaleString()}</td></tr>`;
+                });
+                html += '</table>';
+                var myMentorAssignmentsEl2 = document.getElementById('myMentorAssignments');
+                if (myMentorAssignmentsEl2) myMentorAssignmentsEl2.innerHTML = html;
+            })
+            .catch(() => {
+                var myMentorAssignmentsEl3 = document.getElementById('myMentorAssignments');
+                if (myMentorAssignmentsEl3) myMentorAssignmentsEl3.innerHTML = '<em>Error loading mentor assignments.</em>';
+                var mentorAssignedByEl3 = document.getElementById('mentorAssignedBy');
+                if (mentorAssignedByEl3) mentorAssignedByEl3.innerHTML = '';
+            });
+            var closeAssignedModalBtnEl = document.getElementById('closeAssignedModalBtn');
+            if (closeAssignedModalBtnEl) closeAssignedModalBtnEl.onclick = function() {
+                var assignedModalEl2 = document.getElementById('assignedModal');
+                if (assignedModalEl2) assignedModalEl2.style.display = 'none';
+            };
+    </script>
+</body>
+</html>
+
+       

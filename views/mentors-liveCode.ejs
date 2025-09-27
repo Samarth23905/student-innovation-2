@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Mentor Live Coding Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center">
+    <div class="container max-w-3xl w-full p-6 bg-gray-800 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-4 text-center">Live Coding Test</h2>
+
+        <div class="instructions bg-gray-700 p-4 rounded mb-6">
+            <strong class="block mb-2">Instructions:</strong>
+            <ul class="list-disc list-inside space-y-2 text-sm">
+                <li>Your <b>webcam must be ON</b> during the test.</li>
+                <li>You must <b>share your screen</b> (including your code editor and browser).</li>
+                <li>Before starting, <b>show your background running apps/processes</b> (e.g., open Task Manager or Activity Monitor).</li>
+                <li>Answer the coding questions below. When done, click <b>Submit</b>.</li>
+            </ul>
+        </div>
+
+        <form id="liveCodeForm" method="POST" action="/submitLiveCode" enctype="multipart/form-data" class="space-y-6">
+            <input type="hidden" name="mentorId" value="<%= mentorId %>">
+
+            <div class="question space-y-2">
+                <label class="block font-semibold">1. Write a function in JavaScript to reverse a string without using built-in reverse methods.</label>
+                <textarea name="q1" required rows="5" class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+
+            <div class="question space-y-2">
+                <label class="block font-semibold">2. Given an array of numbers, return the sum of all even numbers.</label>
+                <textarea name="q2" required rows="5" class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+
+            <div class="question space-y-2">
+                <label class="block font-semibold">3. Upload a short screen recording (max 2 min) showing your webcam ON and screen shared while coding.</label>
+                <input type="file" name="screenRecording" accept="video/*,image/*" required class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <div class="actions text-center">
+                <button type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white font-semibold transition duration-200">Submit Live Coding Test</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-100">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>My Mentees</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="max-w-7xl mx-auto my-8 p-6 bg-white rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-6 text-gray-700">My Mentees</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto border border-gray-300 bg-gray-50">
+                <thead>
+                    <tr class="bg-gray-300 text-gray-800">
+                        <th class="px-4 py-2 border border-gray-300">Name</th>
+                        <th class="px-4 py-2 border border-gray-300">Email</th>
+                        <th class="px-4 py-2 border border-gray-300">College</th>
+                        <th class="px-4 py-2 border border-gray-300">Branch</th>
+                        <th class="px-4 py-2 border border-gray-300">Year</th>
+                        <th class="px-4 py-2 border border-gray-300">City</th>
+                        <th class="px-4 py-2 border border-gray-300">State</th>
+                        <th class="px-4 py-2 border border-gray-300">LinkedIn</th>
+                        <th class="px-4 py-2 border border-gray-300">GitHub</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (mentees && mentees.length > 0) { %>
+                        <% mentees.forEach(stud => { %>
+                            <tr class="hover:bg-gray-200">
+                                <td class="px-4 py-2 border border-gray-300 text-gray-700"><%= stud.fullName %></td>
+                                <td class="px-4 py-2 border border-gray-300 text-gray-700"><%= stud.email %></td>
+                                <td class="px-4 py-2 border border-gray-300 text-gray-700"><%= stud.collegeName %></td>
+                                <td class="px-4 py-2 border border-gray-300 text-gray-700"><%= stud.branch %></td>
+                                <td class="px-4 py-2 border border-gray-300 text-gray-700"><%= stud.year %></td>
+                                <td class="px-4 py-2 border border-gray-300 text-gray-700"><%= stud.city %></td>
+                                <td class="px-4 py-2 border border-gray-300 text-gray-700"><%= stud.state %></td>
+                                <td class="px-4 py-2 border border-gray-300 text-blue-600 hover:underline">
+                                    <% if (stud.linkedin) { %>
+                                        <a href="<%= stud.linkedin %>" target="_blank">LinkedIn</a>
+                                    <% } else { %>
+                                        -
+                                    <% } %>
+                                </td>
+                                <td class="px-4 py-2 border border-gray-300 text-blue-600 hover:underline">
+                                    <% if (stud.github) { %>
+                                        <a href="<%= stud.github %>" target="_blank">GitHub</a>
+                                    <% } else { %>
+                                        -
+                                    <% } %>
+                                </td>
+                                <td class="px-4 py-2 border border-gray-300">
+                                    <a href="/student-mentorChat/<%= mentorId %>?studentId=<%= stud.id %>"
+                                       class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">Chat</a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="9" class="px-4 py-2 text-center text-gray-600">No mentees found.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-6 text-center">
+            <button onclick="window.location.href='/mentorDashboard?mentorId=<%= mentorId %>'" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+                Back to Dashboard
+            </button>
+        </div>
+    </div>
+</body>
+</html>

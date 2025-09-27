@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tech Fest Submission — Colleges</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100 font-sans">
+  <div class="max-w-4xl mx-auto p-6">
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg">
+      <h1 class="text-3xl font-bold mb-2">Tech Fest Submission — Colleges</h1>
+      <p class="text-gray-400 mb-5">Submit your college's tech fest for listing. We'll do a quick QA pass and revert via email/phone.</p>
+
+      <form id="festForm" action="/submitTechFest" method="POST" enctype="multipart/form-data" class="grid grid-cols-12 gap-4">
+        <!-- Organization Details -->
+        <div class="col-span-6">
+          <label for="collegeName" class="block font-semibold mb-1">College / Institution Name <span class="text-red-500">*</span></label>
+          <input id="collegeName" name="collegeName" type="text" placeholder="e.g., XYZ Institute of Technology" required class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          <p class="text-sm text-gray-400 mt-1">Use official name as per affiliation/certificates.</p>
+        </div>
+        <div class="col-span-6">
+          <label for="affiliation" class="block font-semibold mb-1">Affiliation / University</label>
+          <input id="affiliation" name="affiliation" type="text" placeholder="e.g., VTU, Anna University" class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="col-span-6">
+          <label for="festName" class="block font-semibold mb-1">Fest Name <span class="text-red-500">*</span></label>
+          <input id="festName" name="festName" type="text" placeholder="e.g., TechNova 2025" required class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="col-span-6">
+          <label for="edition" class="block font-semibold mb-1">Edition</label>
+          <input id="edition" name="edition" type="number" min="1" step="1" placeholder="e.g., 7" class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="col-span-6">
+          <label for="startDate" class="block font-semibold mb-1">Start Date <span class="text-red-500">*</span></label>
+          <input id="startDate" name="startDate" type="date" required class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="col-span-6">
+          <label for="endDate" class="block font-semibold mb-1">End Date <span class="text-red-500">*</span></label>
+          <input id="endDate" name="endDate" type="date" required class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="col-span-8">
+          <label for="venue" class="block font-semibold mb-1">Venue / Address <span class="text-red-500">*</span></label>
+          <input id="venue" name="venue" type="text" placeholder="Campus address with city & state" required class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="col-span-4">
+          <label for="pincode" class="block font-semibold mb-1">Pincode</label>
+          <input id="pincode" name="pincode" type="text" inputmode="numeric" pattern="^[0-9]{6}$" placeholder="6-digit code" class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          <p class="text-sm text-gray-400 mt-1">India 6-digit code.</p>
+        </div>
+
+        <div class="col-span-12 border-t border-gray-700 my-4"></div>
+
+        <!-- Contact -->
+        <div class="col-span-6">
+          <label for="contactPerson" class="block font-semibold mb-1">Contact Person <span class="text-red-500">*</span></label>
+          <input id="contactPerson" name="contactPerson" type="text" placeholder="Name of coordinator" required class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="col-span-6">
+          <label for="designation" class="block font-semibold mb-1">Designation</label>
+          <input id="designation" name="designation" type="text" placeholder="e.g., Student Coordinator / Faculty" class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="col-span-6">
+          <label for="email" class="block font-semibold mb-1">Official Email <span class="text-red-500">*</span></label>
+          <input id="email" name="email" type="email" placeholder="name@college.edu" required class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="col-span-6">
+          <label for="phone" class="block font-semibold mb-1">Phone <span class="text-red-500">*</span></label>
+          <input id="phone" name="phone" type="tel" placeholder="10-digit mobile" pattern="^[6-9][0-9]{9}$" required class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          <p class="text-sm text-gray-400 mt-1">India format: starts with 6-9 and 10 digits.</p>
+        </div>
+
+        <div class="col-span-12 border-t border-gray-700 my-4"></div>
+
+        <!-- Online Presence -->
+        <div class="col-span-6">
+          <label for="website" class="block font-semibold mb-1">Fest Website</label>
+          <input id="website" name="website" type="url" placeholder="https://..." class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="col-span-6">
+          <label for="registrationLink" class="block font-semibold mb-1">Registration Link</label>
+          <input id="registrationLink" name="registrationLink" type="url" placeholder="https://..." class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="col-span-6">
+          <label for="instagram" class="block font-semibold mb-1">Instagram</label>
+          <input id="instagram" name="instagram" type="url" placeholder="https://instagram.com/..." class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="col-span-6">
+          <label for="twitter" class="block font-semibold mb-1">Twitter / X</label>
+          <input id="twitter" name="twitter" type="url" placeholder="https://x.com/..." class="w-full p-3 bg-transparent border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+
+        <div class="col-span-12 border-t border-gray-700 my-4"></div>
+
+        <!-- Events -->
+        <div class="col-span-12">
+          <div class="bg-gray-800 border border-gray-700 rounded-xl p-4">
+            <div class="flex justify-between items-center mb-3">
+              <div>
+                <label class="block font-bold text-gray-100">Events / Tracks <span class="text-red-500">*</span></label>
+                <p class="text-sm text-gray-400">Add all competitions / workshops / keynotes you'll host.</p>
+              </div>
+              <button type="button" id="addEventBtn"
+                class="bg-blue-600 hover:bg-blue-700 text-gray-100 px-4 py-2 rounded-lg transition-all duration-200">
+                + Add Event
+              </button>
+            </div>
+            <div id="eventsList" aria-live="polite"></div>
+            <div id="eventChips" class="flex flex-wrap gap-2 mt-2" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <div class="col-span-4">
+          <label for="expectedParticipants" class="block font-semibold mb-1 text-gray-100">Expected Participants</label>
+          <input id="expectedParticipants" name="expectedParticipants" type="number" min="1" step="1"
+            placeholder="e.g., 500"
+            class="w-full p-3 bg-gray-900 text-white border border-gray-600 rounded-lg placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+        </div>
+
+        <div class="col-span-4">
+          <label for="isNational" class="block font-semibold mb-1 text-white">Scale</label>
+          <select id="isNational" name="scale"
+            class="w-full p-3 bg-gray-900 text-white border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+            <option value="intra">Intra-College</option>
+            <option value="inter">Inter-College (State)</option>
+            <option value="national">National</option>
+            <option value="international">International</option>
+          </select>
+        </div>
+
+        <div class="col-span-4">
+          <label for="mode" class="block font-semibold mb-1 text-white">Mode</label>
+          <select id="mode" name="mode"
+            class="w-full p-3 bg-gray-900 text-white border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+            <option value="offline">Offline</option>
+            <option value="online">Online</option>
+            <option value="hybrid">Hybrid</option>
+          </select>
+        </div>
+
+        <div class="col-span-12">
+          <label for="description" class="block font-semibold mb-1 text-white">About the Fest <span class="text-red-500">*</span></label>
+          <textarea id="description" name="description" rows="5"
+            placeholder="Pitch the fest: theme, departments involved, prizes, sponsors, etc." required
+            class="w-full p-3 bg-gray-900 text-white border border-gray-600 rounded-lg placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"></textarea>
+        </div>
+
+        <div class="col-span-6">
+          <label for="brochure" class="block font-semibold mb-1 text-white">Upload Brochure / Prospectus (PDF)</label>
+          <input id="brochure" name="brochure" type="file" accept="application/pdf"
+            class="w-full p-3 bg-gray-900 text-white border border-gray-600 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition" />
+          <p class="text-sm text-gray-400 mt-1">Max 10 MB.</p>
+        </div>
+
+        <div class="col-span-6">
+          <label for="logo" class="block font-semibold mb-1 text-white">Fest Logo (PNG/JPG)</label>
+          <input id="logo" name="logo" type="file" accept="image/png, image/jpeg"
+            class="w-full p-3 bg-gray-900 text-white border border-gray-600 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition" />
+        </div>
+
+        <div class="col-span-12 mt-4">
+          <label class="flex gap-3 items-start text-white">
+            <input type="checkbox" id="terms"
+              class="mt-1 w-4 h-4 text-blue-600 border-gray-600 rounded focus:ring-blue-500" required />
+            <span>I confirm the details are accurate and I have authorization to submit on behalf of the college. <span class="text-red-500">*</span></span>
+          </label>
+          <p class="text-sm text-gray-400 mt-1">Your data is used only for listing/verification. No spam, no shenanigans.</p>
+        </div>
+
+        <div id="successMsg"
+          class="hidden text-green-400 bg-green-900 border border-green-600 p-3 rounded-lg col-span-12" role="status">
+          ✅ Submitted! We'll review and contact you within 3–5 working days.
+        </div>
+
+        <div id="errorMsg"
+          class="hidden text-red-400 bg-red-900 border border-red-600 p-3 rounded-lg col-span-12" role="alert">
+          ⚠️ Please fix highlighted fields and try again.
+        </div>
+
+        <div class="col-span-12 flex justify-end gap-4 mt-4">
+          <button type="reset"
+            class="px-6 py-2 border border-gray-600 text-white rounded-lg hover:bg-gray-700 transition">Reset</button>
+          <button type="submit"
+            class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white transition">Submit Fest</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Extra Sections -->
+<div class="mt-10 space-y-8">
+  <!-- View Registered Students -->
+  <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg">
+    <h2 class="text-2xl font-bold mb-4">View Registered Students</h2>
+    <form method="GET" action="/viewFestRegistrations" class="flex flex-col md:flex-row gap-4">
+      <select name="festId" required
+        class="flex-1 p-3 bg-transparent border border-gray-600 rounded-lg text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        <% fests.forEach(fest => { %>
+          <option value="<%= fest.id %>"><%= fest.festName %></option>
+        <% }) %>
+      </select>
+      <button type="submit"
+        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white">View</button>
+    </form>
+  </div>
+
+  <!-- View Mentors Willing to Judge -->
+  <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg">
+    <h2 class="text-2xl font-bold mb-4">View Mentors Willing to Judge</h2>
+    <form method="GET" action="/viewFestJudges" class="flex flex-col md:flex-row gap-4">
+      <select name="festId" required
+        class="flex-1 p-3 bg-transparent border border-gray-600 rounded-lg text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        <% fests.forEach(fest => { %>
+          <option value="<%= fest.id %>"><%= fest.festName %></option>
+        <% }) %>
+      </select>
+      <button type="submit"
+        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white">View</button>
+    </form>
+  </div>
+</div>
+
+  <form action="/logout" method="post">
+    <button class="mt-6 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">Logout</button>
+  </form>
+
+  
+<script>
+    // Declare all variables only once at the top
+    const form = document.getElementById('festForm');
+    const eventsList = document.getElementById('eventsList');
+    const eventChips = document.getElementById('eventChips');
+    const addEventBtn = document.getElementById('addEventBtn');
+    // Add events as a hidden input (JSON string) before submit
+    form.addEventListener('submit', (e) => {
+      // Collect events as array of objects
+      const events = [...eventsList.querySelectorAll('.event-row')].map(row => ({
+        name: row.querySelector('input[name="eventName"]').value.trim(),
+        type: row.querySelector('select[name="eventType"]').value,
+        department: row.querySelector('input[name="department"]').value.trim(),
+        prize: Number(row.querySelector('input[name="prize"]').value || 0)
+      })).filter(ev => ev.name);
+      // Add events as a hidden input (JSON string)
+      let eventsInput = form.querySelector('input[name="events"]');
+      if (!eventsInput) {
+        eventsInput = document.createElement('input');
+        eventsInput.type = 'hidden';
+        eventsInput.name = 'events';
+        form.appendChild(eventsInput);
+      }
+      eventsInput.value = JSON.stringify(events);
+    }, true); // Use capture to ensure this runs before other submit handlers
+    function createEventRow(values = {}) {
+      const row = document.createElement('div');
+      row.className = 'event-row flex flex-wrap gap-2 mb-2';
+      row.innerHTML = `
+        <input type="text" name="eventName" placeholder="Event name (e.g., Hackathon)" required value="${values.name || ''}"
+          class="p-2 bg-gray-800 text-gray-300 focus:text-white border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition w-40" />
+        <select name="eventType"
+          class="p-2 bg-gray-800 text-gray-300 focus:text-white border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition w-36">
+          <option value="competition">Competition</option>
+          <option value="workshop">Workshop</option>
+          <option value="keynote">Keynote</option>
+          <option value="expo">Expo/Showcase</option>
+        </select>
+        <input type="text" name="department" placeholder="Department (e.g., CSE, ECE)" value="${values.dept || ''}"
+          class="p-2 bg-gray-800 text-gray-300 focus:text-white border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition w-36" />
+        <input type="number" name="prize" placeholder="Prize Pool (₹)" min="0" step="1000" value="${values.prize || ''}"
+          class="p-2 bg-gray-800 text-gray-300 focus:text-white border border-gray-600 rounded-lg placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition w-32" />
+        <button type="button" class="btn danger bg-red-700 hover:bg-red-800 text-white px-3 py-1 rounded-lg transition" aria-label="Remove event">Remove</button>
+      `;
+      // On focus/input, set text color to white
+      row.querySelectorAll('input, select').forEach(el => {
+        el.addEventListener('focus', function() {
+          this.classList.add('text-white');
+        });
+        el.addEventListener('blur', function() {
+          if (!this.value) this.classList.remove('text-white');
+        });
+        el.addEventListener('input', function() {
+          if (this.value) this.classList.add('text-white');
+          else this.classList.remove('text-white');
+        });
+      });
+      row.querySelector('.btn.danger').addEventListener('click', () => {
+        row.remove();
+        renderChips();
+      });
+      ['input','change'].forEach(evt => row.addEventListener(evt, renderChips));
+      return row;
+    }
+    function renderChips() {
+      const names = [...eventsList.querySelectorAll('input[name="eventName"]')]
+        .map(i => i.value.trim()).filter(Boolean);
+      eventChips.innerHTML = '';
+      names.forEach(n => {
+        const chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.textContent = n;
+        eventChips.appendChild(chip);
+      });
+    }
+    addEventBtn.addEventListener('click', () => {
+      eventsList.appendChild(createEventRow());
+      renderChips();
+    });
+    // Seed with two rows
+    eventsList.appendChild(createEventRow({ name: 'Hackathon', dept: 'CSE', prize: 100000 }));
+    eventsList.appendChild(createEventRow({ name: 'Robo Race', dept: 'ME', prize: 50000 }));
+    renderChips();
+    function markInvalid(input, invalid = true) {
+      input.style.borderColor = invalid ? 'var(--danger)' : 'var(--outline)';
+      input.style.boxShadow = invalid ? '0 0 0 4px rgba(255,107,107,.18)' : '';
+    }
+    function validateDates() {
+      const s = document.getElementById('startDate').value;
+      const e = document.getElementById('endDate').value;
+      if (!s || !e) return true;
+      const ok = new Date(e) >= new Date(s);
+      markInvalid(document.getElementById('endDate'), !ok);
+      return ok;
+    }
+    ['change', 'input'].forEach(evt =>
+      document.getElementById('endDate').addEventListener(evt, validateDates)
+    );
+  </script>
+</body>
+</html>

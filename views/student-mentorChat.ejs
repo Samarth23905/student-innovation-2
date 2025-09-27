@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Student-Mentor Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="chat-container max-w-2xl w-full bg-gray-800 rounded-lg shadow-lg p-4 space-y-4">
+        <h2 class="text-xl font-bold text-center">Chat: <%= student.fullName %> &amp; <%= mentor.fullName %></h2>
+
+        <div class="messages space-y-4 overflow-y-auto max-h-[400px] p-2 bg-gray-700 rounded">
+            <% if (messages && messages.length > 0) { %>
+                <% messages.forEach(msg => { %>
+                    <div class="msg <%= msg.sender_type === 'student' ? 'self text-right' : 'text-left' %>">
+                        <div class="inline-block bg-gray-600 rounded px-3 py-2 max-w-[80%]">
+                            <div class="user font-semibold"><%= msg.sender_type === 'student' ? student.fullName : mentor.fullName %></div>
+                            <div class="text mt-1"><%= msg.message %></div>
+                            <div class="time text-xs text-gray-400 mt-1"><%= new Date(msg.createdAt).toLocaleString() %></div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p class="text-center text-gray-400">No messages yet.</p>
+            <% } %>
+        </div>
+
+        <form id="chatForm" class="flex space-x-2">
+            <input type="hidden" id="studentId" value="<%= studentId %>">
+            <input type="hidden" id="mentorId" value="<%= mentorId %>">
+            <input type="hidden" id="senderType" value="<%= (typeof userType !== 'undefined' && userType === 'Mentor') ? 'mentor' : 'student' %>">
+            <input type="text" id="messageInput" placeholder="Type your message..." required autocomplete="off"
+                   class="flex-1 p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white font-semibold">Send</button>
+        </form>
+
+        <div class="text-center mt-4">
+            <button onclick="window.location.href='/dashboard'" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded text-white font-semibold">Back to Dashboard</button>
+        </div>
+    </div>
+</body>
+<script>
+    const socket = io();
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+    const messagesDiv = document.querySelector('.messages');
+    const studentId = document.getElementById('studentId').value;
+    const mentorId = document.getElementById('mentorId').value;
+    const senderType = document.getElementById('senderType').value;
+    const studentName = "<%- JSON.stringify(student.email) %>";
+    const mentorName = "<%- JSON.stringify(mentor.email) %>";
+
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const msg = messageInput.value.trim();
+        if (!msg) return;
+        socket.emit('mentor-student-chat', {
+            studentId,
+            mentorId,
+            senderType,
+            message: msg
+        });
+        messageInput.value = '';
+    });
+
+    socket.on('mentor-student-chat', function(data) {
+        // Only display if this chat matches
+        if (data.studentId == studentId && data.mentorId == mentorId) {
+            const isSelf = data.senderType === senderType;
+            const user = data.senderType === 'student' ? studentName : mentorName;
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'msg ' + (isSelf ? 'self text-right' : 'text-left');
+            msgDiv.innerHTML = `
+                <div class="inline-block bg-gray-600 rounded px-3 py-2 max-w-[80%]">
+                    <div class="user font-semibold">${user}</div>
+                    <div class="text mt-1">${data.message}</div>
+                    <div class="time text-xs text-gray-400 mt-1">${new Date().toLocaleString()}</div>
+                </div>
+            `;
+            messagesDiv.appendChild(msgDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    });
+</script>
+</html>

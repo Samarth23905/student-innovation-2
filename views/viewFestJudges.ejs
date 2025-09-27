@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-100">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Mentors Willing to Judge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="max-w-4xl mx-auto my-8 p-6 bg-gray-200 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-4 text-center text-gray-700">Mentors Willing to Judge</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto border border-gray-300 bg-gray-100">
+                <thead>
+                    <tr class="bg-gray-300 text-gray-800">
+                        <th class="px-4 py-2 border border-gray-300">Name</th>
+                        <th class="px-4 py-2 border border-gray-300">Email</th>
+                        <th class="px-4 py-2 border border-gray-300">College</th>
+                        <th class="px-4 py-2 border border-gray-300">Expertise</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (judges && judges.length > 0) { %>
+                        <% judges.forEach(j => { %>
+                            <tr class="hover:bg-gray-200">
+                                <td class="px-4 py-2 border border-gray-300 text-gray-700"><%= j.fullName %></td>
+                                <td class="px-4 py-2 border border-gray-300 text-gray-700"><%= j.email %></td>
+                                <td class="px-4 py-2 border border-gray-300 text-gray-700"><%= j.collegeName %></td>
+                                <td class="px-4 py-2 border border-gray-300 text-gray-700"><%= j.expertise %></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="4" class="px-4 py-2 text-center text-gray-600">No mentors available</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4 text-center flex flex-col gap-2">
+            <button onclick="window.location.href='/collegeDashboard'" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">Back to Dashboard</button>
+            <button onclick="history.back()" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">Back</button>
+        </div>
+            <!-- AI Predicted Mentors Section -->
+            <div class="mb-8">
+                <h3 class="text-lg font-bold mb-2 text-green-700">AI Recommended Top Mentors</h3>
+                <div id="aiPredictedJudges" class="bg-gray-100 border rounded p-4">
+                    <em>Loading mentor predictions...</em>
+                </div>
+            </div>
+    </div>
+</body>
+<script>
+    // Fetch and display AI predicted mentors for judging
+    fetch('/collegeDashboardAI')
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('aiPredictedJudges');
+            if (!data || !data.mentor_ranking || !Array.isArray(data.mentor_ranking) || !data.mentor_ranking.length) {
+                container.innerHTML = '<em>No mentor recommendations available.</em>';
+                return;
+            }
+            let html = '<table class="min-w-full divide-y divide-gray-200 text-sm"><thead><tr><th>Name</th><th>Expertise</th><th>Experience</th></tr></thead><tbody class="divide-y divide-gray-200">';
+            data.mentor_ranking.forEach(mentor => {
+                html += `<tr><td>${mentor.fullName}</td><td>${mentor.expertise}</td><td>${mentor.experience}</td></tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        })
+        .catch(() => {
+            document.getElementById('aiPredictedJudges').innerHTML = '<em>Error loading mentor recommendations.</em>';
+        });
+</script>
+</html>

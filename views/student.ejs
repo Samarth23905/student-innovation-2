@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Student Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-xl w-full bg-gray-800 rounded-lg shadow-lg p-8">
+        <div class="flex flex-col items-center">
+            <img src="/<%= student.profile_pic || 'uploads/default.jpg' %>" alt="Profile" class="w-32 h-32 rounded-full object-cover border-4 border-blue-500 mb-4" />
+            <h2 class="text-3xl font-bold mb-2"><%= student.fullName %></h2>
+            <p class="text-gray-400 mb-1"><strong>Email:</strong> <%= student.email %></p>
+            <p class="text-gray-400 mb-1"><strong>College:</strong> <%= student.collegeName %></p>
+            <p class="text-gray-400 mb-1"><strong>Branch:</strong> <%= student.branch %></p>
+            <p class="text-gray-400 mb-1"><strong>Year:</strong> <%= student.year %></p>
+            <p class="text-gray-400 mb-1"><strong>City:</strong> <%= student.city %></p>
+            <p class="text-gray-400 mb-1"><strong>State:</strong> <%= student.state %></p>
+            <p class="text-gray-400 mb-1"><strong>Tech Stack:</strong> <%= student.techStack %></p>
+            <p class="text-gray-400 mb-1"><strong>GitHub:</strong> <a href="<%= student.github %>" target="_blank" class="text-blue-400 hover:underline"><%= student.github %></a></p>
+            <p class="text-gray-400 mb-1"><strong>LinkedIn:</strong> <a href="<%= student.linkedin %>" target="_blank" class="text-blue-400 hover:underline"><%= student.linkedin %></a></p>
+            <p class="text-gray-400 mb-1"><strong>Badges:</strong> 
+                <% if (student.badges && student.badges.length > 0) { %>
+                    <% student.badges.forEach(badge => { %>
+                        <span class="inline-block bg-yellow-400 text-black px-2 py-1 rounded mr-1 mb-1 text-xs font-semibold">
+                            <%= badge.language %>: <%= badge.badge_name %>
+                        </span>
+                    <% }) %>
+                <% } else { %>
+                    <span class="text-gray-400">No badges yet</span>
+                <% } %>
+            </p>
+        </div>
+        <div class="text-center mt-6">
+            <button onclick="window.history.back()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white transition-colors">Back</button>
+        </div>
+    </div>
+</body>
+</html>

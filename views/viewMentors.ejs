@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-100">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Mentors</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="max-w-2xl mx-auto my-8 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-6">My Mentors</h2>
+        <% if (mentors && mentors.length > 0) { %>
+            <% mentors.forEach(function(mentor) { %>
+                <div class="flex items-center gap-6 mb-6"
+                     data-mentor-id="<%= mentor.id %>"
+                     data-student-id="<%= currentUserId %>">
+                    <img src="/<%= mentor.profile_pic || 'uploads/default.jpg' %>" 
+                         alt="Mentor" 
+                         class="w-24 h-24 rounded-full object-cover" />
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2"><%= mentor.fullName %></h3>
+                        <p><strong>College:</strong> <%= mentor.collegeName %></p>
+                        <p><strong>Expertise:</strong> <%= mentor.expertise %></p>
+                        <p><strong>State:</strong> <%= mentor.state %></p>
+                        <p><strong>Experience:</strong> <%= mentor.experience %> years</p>
+                        <div class="mt-2 flex gap-2">
+                            <a href="/student-mentorChat/<%= mentor.id %>?studentId=<%= currentUserId %>"
+                               class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
+                                Chat
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 mb-8">
+                    <h4 class="font-bold mb-1">Rate Your Mentor</h4>
+                    <form class="mentorRatingForm flex items-center gap-2" data-mentor-id="<%= mentor.id %>">
+                        <span class="mr-2">Your Rating:</span>
+                        <span class="starRating flex gap-1 text-2xl cursor-pointer">
+                            <span data-value="1">&#9733;</span>
+                            <span data-value="2">&#9733;</span>
+                            <span data-value="3">&#9733;</span>
+                            <span data-value="4">&#9733;</span>
+                            <span data-value="5">&#9733;</span>
+                        </span>
+                        <input type="hidden" name="rating" class="mentorRatingValue" value="0">
+                        <input type="hidden" name="mentorId" value="<%= mentor.id %>">
+                        <input type="hidden" name="studentId" value="<%= currentUserId %>">
+                        <button type="submit" 
+                                class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+                            Submit Rating
+                        </button>
+                    </form>
+                    <div class="mentorRatingFeedback mt-2 font-semibold"></div>
+                    <div class="mentorAverageRating mt-2 text-gray-700"></div>
+                </div>
+                            <!-- Feedback Section -->
+                            <div class="mt-6">
+                                <h4 class="font-bold mb-1">Give Feedback to Your Mentor</h4>
+                                <form class="mentorFeedbackForm flex flex-col gap-2" data-mentor-id="<%= mentor.id %>">
+                                    <textarea name="feedback" rows="2" class="border rounded px-3 py-2" placeholder="Write your feedback..."></textarea>
+                                    <input type="hidden" name="mentorId" value="<%= mentor.id %>">
+                                    <input type="hidden" name="studentId" value="<%= currentUserId %>">
+                                    <button type="submit" class="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700">Submit Feedback</button>
+                                </form>
+                                <div class="mentorFeedbackMsg mt-2 font-semibold"></div>
+                            </div>
+            <% }); %>
+        <% } else { %>
+            <p class="text-gray-600">No mentor assigned yet.</p>
+        <% } %>
+
+    </div>
+    <div class="text-center mt-6">
+        <button onclick="window.location.href='/studentDashboard'" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded text-white font-semibold">Back to Dashboard</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll('.mentorRatingForm').forEach(form => {
+                const mentorId = form.getAttribute('data-mentor-id');
+                const studentId = form.querySelector('input[name="studentId"]').value;
+                const stars = form.querySelectorAll('.starRating span');
+                const ratingInput = form.querySelector('.mentorRatingValue');
+                const feedbackEl = form.querySelector('.mentorRatingFeedback');
+                const avgEl = form.querySelector('.mentorAverageRating');
+
+                function setStars(rating) {
+                    stars.forEach(star => {
+                        star.style.color = (parseInt(star.dataset.value) <= rating) ? '#FFD700' : '#ccc';
+                    });
+                }
+
+                // Star click
+                stars.forEach(star => {
+                    star.addEventListener('click', () => {
+                        const val = parseInt(star.dataset.value);
+                        ratingInput.value = val;
+                        setStars(val);
+                    });
+                });
+
+                // Fetch average rating
+                fetch(`/api/mentor/averageRating?mentorId=${mentorId}`)
+                    .then(res => res.json())
+                    .then(ratingData => {
+                        if (ratingData.count > 0) {
+                            avgEl.innerHTML = 
+                              `Average Rating: <span style="color:#FFD700">${Number(ratingData.avgRating).toFixed(2)} &#9733;</span> (${ratingData.count} ratings)`;
+                        } else {
+                            avgEl.textContent = 'No ratings yet.';
+                        }
+                    });
+
+                // Handle rating form
+                form.addEventListener('submit', e => {
+                    e.preventDefault();
+                    const rating = ratingInput.value;
+                    if (!rating || rating < 1 || rating > 5) {
+                        feedbackEl.textContent = 'Please select a rating.';
+                        feedbackEl.style.color = 'red';
+                        return;
+                    }
+                    fetch('/api/mentor/rate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mentorId, studentId, rating })
+                    })
+                    .then(res => res.json())
+                    .then(() => {
+                        feedbackEl.textContent = 'Rating submitted!';
+                        feedbackEl.style.color = 'green';
+                        // refresh avg
+                        return fetch(`/api/mentor/averageRating?mentorId=${mentorId}`);
+                    })
+                    .then(res => res.json())
+                    .then(ratingData => {
+                        if (ratingData.count > 0) {
+                            avgEl.innerHTML = 
+                              `Average Rating: <span style="color:#FFD700">${Number(ratingData.avgRating).toFixed(2)} &#9733;</span> (${ratingData.count} ratings)`;
+                        } else {
+
+                    // Feedback form logic
+                    document.querySelectorAll('.mentorFeedbackForm').forEach(form => {
+                        const mentorId = form.getAttribute('data-mentor-id');
+                        const studentId = form.querySelector('input[name="studentId"]').value;
+                        const feedbackMsg = form.nextElementSibling;
+                        form.addEventListener('submit', e => {
+                            e.preventDefault();
+                            const feedback = form.querySelector('textarea[name="feedback"]').value.trim();
+                            if (!feedback) {
+                                feedbackMsg.textContent = 'Please enter feedback.';
+                                feedbackMsg.style.color = 'red';
+                                return;
+                            }
+                            fetch('/api/mentor/feedback', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ mentorId, studentId, feedback })
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    feedbackMsg.textContent = 'Feedback submitted!';
+                                    feedbackMsg.style.color = 'green';
+                                } else {
+                                    feedbackMsg.textContent = 'Error: ' + (data.error || 'Could not submit feedback.');
+                                    feedbackMsg.style.color = 'red';
+                                }
+                            })
+                            .catch(() => {
+                                feedbackMsg.textContent = 'Error submitting feedback.';
+                                feedbackMsg.style.color = 'red';
+                            });
+                            form.querySelector('textarea[name="feedback"]').value = '';
+                        });
+                    });
+                            avgEl.textContent = 'No ratings yet.';
+                        }
+                    })
+                    .catch(() => {
+                        feedbackEl.textContent = 'Error submitting rating.';
+                        feedbackEl.style.color = 'red';
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Connect | Mentor-Mentee Platform</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .fest-card {
+            background-position: center;
+            background-size: cover;
+            transition: all 0.3s ease;
+        }
+        .fest-card:hover {
+            transform: scale(1.03);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i data-feather="users" class="text-indigo-600 h-6 w-6"></i>
+                        <span class="ml-2 text-xl font-bold text-gray-800">CollegeConnect</span>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="#" class="text-gray-900 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Features</a>
+                    <a href="#" class="text-gray-900 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Community</a>
+                    <a href="#" class="text-gray-900 hover:text-indigo-600 px-3 py-2 text-sm font-medium">College Fests</a>
+                    <a href="#" class="text-gray-900 hover:text-indigo-600 px-3 py-2 text-sm font-medium">About</a>
+                </div>
+                <div class="flex items-center">
+                    <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient pt-32 pb-20 px-4 sm:px-6 lg:px-8 text-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="md:w-1/2 mb-10 md:mb-0" data-aos="fade-right">
+                    <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">
+                        Connect, Learn & Grow Together
+                    </h1>
+                    <p class="text-xl mb-8 text-indigo-100">
+                        The ultimate platform for mentor-mentee communication, student communities, and college fest updates.
+                    </p>
+                    <a href="/signUp.html" class="bg-white text-indigo-600 hover:bg-indigo-50 px-6 py-3 rounded-md text-lg font-semibold transition duration-300 shadow-lg">Join Now <i data-feather="arrow-right" class="inline ml-2"></i></a>
+                </div>
+                <div class="md:w-1/2" data-aos="fade-left">
+                    <img src="http://static.photos/education/1200x630/1" alt="Students collaborating" class="rounded-lg shadow-xl border-4 border-white">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Our Key Features</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Empowering students with tools to connect, communicate, and stay updated
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-white rounded-xl p-8 shadow-md feature-card transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i data-feather="message-square" class="text-indigo-600 h-8 w-8"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center mb-4">Mentor-Mentee Communication</h3>
+                    <p class="text-gray-600 text-center">
+                        Seamless chat and video call features to connect students with mentors from various fields.
+                    </p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="bg-white rounded-xl p-8 shadow-md feature-card transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i data-feather="users" class="text-indigo-600 h-8 w-8"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center mb-4">Student Community</h3>
+                    <p class="text-gray-600 text-center">
+                        Join interest-based communities, share knowledge, and collaborate on projects with peers.
+                    </p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="bg-white rounded-xl p-8 shadow-md feature-card transition duration-300" data-aos="fade-up" data-aos-delay="300">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i data-feather="calendar" class="text-indigo-600 h-8 w-8"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center mb-4">College Fest Updates</h3>
+                    <p class="text-gray-600 text-center">
+                        Discover and participate in college fests across the country with event schedules and registration.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="md:flex md:items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0" data-aos="fade-right">
+                    <img src="http://static.photos/people/1200x630/2" alt="Student community" class="rounded-lg shadow-xl">
+                </div>
+                <div class="md:w-1/2 md:pl-12" data-aos="fade-left">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">Build Your Student Community</h2>
+                    <p class="text-xl text-gray-600 mb-8">
+                        Connect with like-minded students across colleges. Share ideas, collaborate on projects, and grow your network.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i data-feather="check-circle" class="text-green-500 mr-3 mt-1"></i>
+                            <span class="text-gray-700">Join subject-specific groups and clubs</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check-circle" class="text-green-500 mr-3 mt-1"></i>
+                            <span class="text-gray-700">Participate in discussion forums</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check-circle" class="text-green-500 mr-3 mt-1"></i>
+                            <span class="text-gray-700">Organize or join study groups</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check-circle" class="text-green-500 mr-3 mt-1"></i>
+                            <span class="text-gray-700">Showcase your projects and achievements</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- College Events Benefits Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Why Track College Events?</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Discover the advantages of staying updated with inter-college events
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Benefit 1 -->
+                <div class="bg-white rounded-xl p-8 shadow-md feature-card transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i data-feather="award" class="text-indigo-600 h-8 w-8"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center mb-4">Win Prizes & Recognition</h3>
+                    <p class="text-gray-600 text-center">
+                        Participate in hackathons and competitions to showcase your skills and win exciting prizes.
+                    </p>
+                </div>
+                
+                <!-- Benefit 2 -->
+                <div class="bg-white rounded-xl p-8 shadow-md feature-card transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i data-feather="network" class="text-indigo-600 h-8 w-8"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center mb-4">Expand Your Network</h3>
+                    <p class="text-gray-600 text-center">
+                        Connect with talented students and industry professionals from across different colleges.
+                    </p>
+                </div>
+                
+                <!-- Benefit 3 -->
+                <div class="bg-white rounded-xl p-8 shadow-md feature-card transition duration-300" data-aos="fade-up" data-aos-delay="300">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i data-feather="briefcase" class="text-indigo-600 h-8 w-8"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center mb-4">Career Opportunities</h3>
+                    <p class="text-gray-600 text-center">
+                        Many events have recruiters looking for talented participants - your next opportunity could be waiting!
+                    </p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12" data-aos="fade-up">
+                <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md text-lg font-semibold transition duration-300">
+                    Discover Events <i data-feather="arrow-right" class="inline ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-indigo-700 text-white">
+        <div class="max-w-4xl mx-auto text-center" data-aos="zoom-in">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your College Experience?</h2>
+            <p class="text-xl mb-8 text-indigo-100">
+                Join thousands of students who are already connecting, learning and growing together.
+            </p>
+            <button class="bg-white text-indigo-600 hover:bg-indigo-50 px-8 py-4 rounded-md text-lg font-semibold transition duration-300 shadow-lg">
+                Get Started For Free
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">CollegeConnect</h3>
+                    <p class="text-gray-400">
+                        Empowering students with connections, knowledge and opportunities.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Features</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Mentor Network</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Student Communities</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">College Fests</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Resources</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Connect</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i data-feather="facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i data-feather="twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i data-feather="instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i data-feather="linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-10 pt-6 text-center text-gray-400">
+                <p>© 2023 CollegeConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+        feather.replace();
+    </script>
+    </body>
+
+    <!-- AI Chatbot Floating Button -->
+    <button id="aiChatbotBtn" class="fixed bottom-8 right-8 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-lg p-4 flex items-center z-50" style="font-size: 1.25rem;">
+            <i data-feather="message-circle" class="mr-2"></i> AI Chatbot
+    </button>
+    <div id="aiChatbotModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+            <h3 class="text-lg font-bold mb-2 text-indigo-700">AI Chatbot</h3>
+            <div id="chatbotMessages" class="mb-4 h-40 overflow-y-auto border rounded p-2 bg-gray-50 text-sm"></div>
+            <input id="chatbotInput" type="text" class="w-full border rounded px-3 py-2 mb-2" placeholder="Type your question...">
+            <div class="flex justify-end">
+                <button id="chatbotSendBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">Send</button>
+                <button id="chatbotCloseBtn" class="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded">Close</button>
+            </div>
+        </div>
+    </div>
+    <script>
+    document.getElementById('aiChatbotBtn').onclick = function() {
+        document.getElementById('aiChatbotModal').classList.remove('hidden');
+    };
+    document.getElementById('chatbotCloseBtn').onclick = function() {
+        document.getElementById('aiChatbotModal').classList.add('hidden');
+    };
+    document.getElementById('chatbotSendBtn').onclick = function() {
+        const input = document.getElementById('chatbotInput').value;
+        if (!input) return;
+        const messagesDiv = document.getElementById('chatbotMessages');
+        messagesDiv.innerHTML += `<div class='text-right mb-1'><span class='bg-indigo-100 text-indigo-800 px-2 py-1 rounded'>You: ${input}</span></div>`;
+        fetch('/ai/chatbot', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: input })
+        })
+        .then(res => res.json())
+        .then(data => {
+            messagesDiv.innerHTML += `<div class='text-left mb-1'><span class='bg-gray-200 text-gray-800 px-2 py-1 rounded'>Bot: ${data.reply}</span></div>`;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        })
+        .catch(() => {
+            messagesDiv.innerHTML += `<div class='text-left mb-1'><span class='bg-red-100 text-red-800 px-2 py-1 rounded'>Bot: Error. Please try again.</span></div>`;
+        });
+        document.getElementById('chatbotInput').value = '';
+    };
+    </script>
+</body>
+</html>

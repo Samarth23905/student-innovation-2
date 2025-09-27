@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mentor Credentials</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center">
+  <div class="container max-w-lg w-full p-6 bg-gray-800 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold mb-6 text-center">Mentor Credentials</h2>
+    <form action="/mentorCred" method="POST" class="space-y-4">
+      <input type="hidden" name="mentorId" value="<%= mentorId %>" />
+
+      <div class="flex flex-col">
+        <label for="qualification" class="mb-1 font-semibold">Highest Qualification:</label>
+        <input type="text" name="qualification" placeholder="e.g. M.Tech in Computer Science" required
+               class="p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <div class="flex flex-col">
+        <label for="experience" class="mb-1 font-semibold">Years of Experience:</label>
+        <input type="number" name="experience" placeholder="e.g. 5" required
+               class="p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <div class="flex flex-col">
+        <label for="specialization" class="mb-1 font-semibold">Specialization / Domain:</label>
+        <input type="text" name="specialization" placeholder="e.g. AI, Machine Learning" required
+               class="p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <div class="flex flex-col">
+        <label for="bio" class="mb-1 font-semibold">Short Bio:</label>
+        <textarea name="bio" rows="4" placeholder="Tell us about yourself..." required
+                  class="p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+      </div>
+
+      <div class="text-center">
+        <button type="submit"
+                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white font-semibold transition duration-200">Save Credentials</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
