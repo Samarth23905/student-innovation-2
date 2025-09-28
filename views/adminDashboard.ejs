@@ -22,7 +22,7 @@
           <th class="px-4 py-3">State</th>
           <th class="px-4 py-3">Live Coding</th>
           <th class="px-4 py-3">Action</th>
-          <th class="px-4 py-3">Rating</th>
+          <!-- Rating column removed -->
         </tr>
       </thead>
       <tbody>
@@ -38,7 +38,7 @@
           <td class="px-4 py-3 text-blue-600 underline">
             <a href="<%= mentor.linkedin %>" target="_blank">LinkedIn</a>
           </td>
-          <td class="px-4 py-3 text-gray-800 underline">
+          <td class="px-4 py-3 text-blue-600 underline">
             <a href="<%= mentor.github %>" target="_blank">GitHub</a>
           </td>
           <td class="px-4 py-3"><%= mentor.state %></td>
@@ -59,17 +59,7 @@
               <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">Reject</button>
             </form>
           </td>
-          <td class="px-4 py-3">
-            <div class="flex items-center space-x-1" id="mentor-rating-<%= mentor.id %>">
-              <span class="font-semibold text-yellow-500" id="avg-rating-<%= mentor.id %>">-</span>
-              <span class="text-xs text-gray-600" id="rating-count-<%= mentor.id %>"></span>
-            </div>
-            <div class="flex items-center space-x-1 mt-1">
-              <% for (let star = 1; star <= 5; star++) { %>
-                <span class="star cursor-pointer text-gray-400 hover:text-yellow-400 text-lg" data-mentor="<%= mentor.id %>" data-star="<%= star %>">&#9733;</span>
-              <% } %>
-            </div>
-          </td>
+          <!-- Rating cell removed -->
         </tr>
         <% }) %>
       </tbody>
@@ -77,16 +67,22 @@
   </div>
 
   <!-- Live Coding Modal -->
-  <div id="liveCodingModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-11/12 relative">
-      <button onclick="closeLiveCoding()" class="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-xl">&times;</button>
-      <h3 class="text-lg font-bold mb-4">Mentor Live Coding Submission</h3>
-      <div id="liveCodingContent" class="text-sm text-gray-800 space-y-4"></div>
+  <div id="liveCodingModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
+    <div class="bg-gradient-to-br from-blue-100 via-white to-purple-100 p-8 rounded-3xl shadow-2xl max-w-2xl w-11/12 relative border-4 border-blue-300 animate-fadeIn max-h-[90vh] overflow-y-auto">
+      <button onclick="closeLiveCoding()" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-2xl font-bold">&times;</button>
+      <h3 class="text-2xl font-extrabold mb-6 text-center text-blue-700 tracking-wide drop-shadow">Mentor Live Coding Submission</h3>
+      <div id="liveCodingContent" class="space-y-6 text-base text-gray-900"></div>
     </div>
   </div>
+  <style>
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    .animate-fadeIn { animation: fadeIn 0.4s cubic-bezier(0.4,0,0.2,1); }
+    #liveCodingModal video, #liveCodingModal img { box-shadow: 0 4px 24px 0 rgba(80,80,180,0.10); border-radius: 1rem; }
+    #liveCodingModal pre { background: #f3f4f6; border-radius: 0.5rem; padding: 1rem; font-size: 1rem; }
+  </style>
 
   <!-- Hidden mentors data -->
-  <div id="mentors-data" data-mentors='<%- JSON.stringify(mentors) %>' class="hidden"></div>
+    <div id="mentors-data" data-mentors='<%= JSON.stringify(mentors).replace(/'/g, "&#39;") %>' class="hidden"></div>
 
   <script>
     var mentors = JSON.parse(document.getElementById('mentors-data').getAttribute('data-mentors'));

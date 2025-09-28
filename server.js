@@ -74,25 +74,7 @@ db.connect((err) => {
 // AI/ML integration
 const PYTHON_PATH = 'python'; // Change if using venv
 
-// Student prediction endpoint
-app.get('/student/predict/:id', (req, res) => {
-    const studentId = req.params.id;
-    // Fetch student data
-    db.query('SELECT * FROM users WHERE id = ? AND userType = "Student"', [studentId], (err, rows) => {
-        if (err || rows.length === 0) return res.status(404).send('Student not found');
-        const student = rows[0];
-        // Call Python script for prediction
-        execFile(PYTHON_PATH, ['ai/predict_student.py', JSON.stringify(student)], (error, stdout, stderr) => {
-            if (error) return res.status(500).send('AI error: ' + stderr);
-            try {
-                const result = JSON.parse(stdout);
-                res.json(result);
-            } catch {
-                res.status(500).send('Invalid AI response');
-            }
-        });
-    });
-});
+
 
 // Mentor prediction endpoint
 app.get('/mentor/predict/:id', (req, res) => {
@@ -109,7 +91,6 @@ app.get('/mentor/predict/:id', (req, res) => {
                 db.query('SELECT * FROM badges', (bErr, badges) => {
                     if (bErr) return res.status(500).send('DB error');
                     // Call Python script for mentee prediction
-                    const { execFile } = require('child_process');
                     const PYTHON_PATH = 'python';
                     execFile(PYTHON_PATH, ['ai/mentor_mentee_recommend.py', JSON.stringify({ mentor, students, grades, badges })], (error, stdout, stderr) => {
                         if (error) return res.status(500).send('AI error: ' + stderr);
@@ -140,7 +121,6 @@ app.get('/collegeDashboardAI', (req, res) => {
                     db.query('SELECT * FROM mentor_feedback', (fErr, feedbacks) => {
                         if (fErr) return res.status(500).send('DB error');
                         // Call Python script for dashboard analytics (judges)
-                        const { execFile } = require('child_process');
                         const PYTHON_PATH = 'python';
                         execFile(PYTHON_PATH, ['ai/college_dashboard_judges.py', JSON.stringify({ users, fests, ratings, feedbacks })], (error, stdout, stderr) => {
                             if (error) return res.status(500).send('AI error: ' + stderr);
@@ -270,10 +250,10 @@ app.post('/register', upload.single('profile_pic'), async (req, res) => {
                 return res.status(400).send('All fields are required for mentors');
             }
             query = `
-                INSERT INTO users (profile_pic, fullName, email, hashedPassword, userType, expertise, collegeName, experience, city, state, github, portfolio) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO users (profile_pic, fullName, email, hashedPassword, userType, expertise, collegeName, experience, city, state, github, linkedin, portfolio) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
-            params = [profile_pic, fullName, email, hashedPassword, userType, expertise, collegeName, experience, city, state, github, portfolio];
+            params = [profile_pic, fullName, email, hashedPassword, userType, expertise, collegeName, experience, city, state, github, linkedin, portfolio];
             db.execute(query, params, (err, result) => {
                 if (err) {
                     console.error(err);
@@ -1195,17 +1175,19 @@ app.get('/student/predict/:id', (req, res) => {
         if (err) return res.status(500).send('DB error');
         db.query('SELECT * FROM mentor_feedback', (fErr, feedbacks) => {
             if (fErr) return res.status(500).send('DB error');
-            // Call Python script for mentor recommendations
-            const { execFile } = require('child_process');
-            const PYTHON_PATH = 'python';
-            execFile(PYTHON_PATH, ['ai/student_mentor_recommend.py', JSON.stringify({ studentId, mentors, feedbacks })], (error, stdout, stderr) => {
-                if (error) return res.status(500).send('AI error: ' + stderr);
-                try {
-                    const result = JSON.parse(stdout);
-                    res.json(result);
-                } catch {
-                    res.status(500).send('Invalid AI response');
-                }
+            db.query('SELECT * FROM mentor_ratings', (rErr, ratings) => {
+                if (rErr) return res.status(500).send('DB error');
+                // Call Python script for mentor recommendations
+                const PYTHON_PATH = 'python';
+                execFile(PYTHON_PATH, ['ai/student_mentor_recommend.py', JSON.stringify({ studentId, mentors, feedbacks, ratings })], (error, stdout, stderr) => {
+                    if (error) return res.status(500).send('AI error: ' + stderr);
+                    try {
+                        const result = JSON.parse(stdout);
+                        res.json(result);
+                    } catch {
+                        res.status(500).send('Invalid AI response');
+                    }
+                });
             });
         });
     });

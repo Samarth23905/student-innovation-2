@@ -30,51 +30,50 @@
       <form action="/register" method="POST" enctype="multipart/form-data" class="space-y-3">
         <input type="hidden" name="userType" value="Student" />
         <!-- File Upload -->
-        <label for="profile_pic" class="block text-white font-semibold mb-2">Profile Picture</label>
-        <input type="file" name="profile_pic" accept="image/*" required
+        <input type="file" id="student_profile_pic" name="profile_pic" accept="image/*" required autocomplete="photo"
           class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Full Name -->
         <input type="text" name="fullName" placeholder="Full Name" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="student_fullName" autocomplete="name" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Email -->
         <input type="email" name="email" placeholder="Email" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="student_email" autocomplete="email" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Password -->
         <input type="password" name="password" placeholder="Password" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="student_password" autocomplete="new-password" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Confirm Password -->
         <input type="password" name="confirmPassword" placeholder="Confirm Password" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="student_confirmPassword" autocomplete="new-password" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- College Name -->
         <input type="text" name="collegeName" placeholder="College Name" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="student_collegeName" autocomplete="organization" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Branch -->
         <input type="text" name="branch" placeholder="Branch / Stream" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="student_branch" autocomplete="organization-title" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Year -->
         <select name="year" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="student_year" autocomplete="off" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  focus:outline-none focus:ring-2 focus:ring-purple-400 hover:scale-105 transition-all duration-300">
           <option value="" class="text-gray-600" disabled selected>Select Year of Study</option>
           <option class="text-black">1st Year</option>
@@ -85,25 +84,25 @@
 
         <!-- City -->
         <input type="text" name="city" placeholder="City" 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="student_city" autocomplete="address-level2" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- State -->
         <input type="text" name="state" placeholder="State" 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="student_state" autocomplete="address-level1" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- GitHub Profile -->
         <input type="url" name="github" placeholder="GitHub Profile" 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="student_github" autocomplete="url" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- LinkedIn Profile -->
         <input type="url" name="linkedin" placeholder="LinkedIn Profile" 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="student_linkedin" autocomplete="url" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
@@ -124,45 +123,44 @@
       <form action="/register" method="POST" enctype="multipart/form-data" class="space-y-3">
         <input type="hidden" name="userType" value="Mentor" />
         <!-- File Upload -->
-        <label for="profile_pic" class="block text-white font-semibold mb-2">Profile Picture</label>
-        <input type="file" name="profile_pic" accept="image/*"
+        <input type="file" id="mentor_profile_pic" name="profile_pic" accept="image/*" autocomplete="photo"
           class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Full Name -->
         <input type="text" name="fullName" placeholder="Full Name" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="mentor_fullName" autocomplete="name" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Email -->
         <input type="email" name="email" placeholder="Email" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="mentor_email" autocomplete="email" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- College Name -->
         <input type="text" name="collegeName" placeholder="College Name" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="mentor_collegeName" autocomplete="organization" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Password -->
         <input type="password" name="password" placeholder="Password" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="mentor_password" autocomplete="new-password" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Confirm Password -->
         <input type="password" name="confirmPassword" placeholder="Confirm Password" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="mentor_confirmPassword" autocomplete="new-password" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Experience -->
         <select name="experience" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="mentor_experience" autocomplete="off" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  focus:outline-none focus:ring-2 focus:ring-purple-400 hover:scale-105 transition-all duration-300">
           <option value="" class="text-gray-600">Years of Experience</option>
           <option class="text-black">0-1</option>
@@ -173,37 +171,37 @@
 
         <!-- Expertise -->
         <input type="text" name="expertise" placeholder="Expertise / Tech Stack" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="mentor_expertise" autocomplete="off" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- LinkedIn -->
         <input type="url" name="linkedin" placeholder="LinkedIn Profile" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="mentor_linkedin" autocomplete="url" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- GitHub -->
         <input type="url" name="github" placeholder="GitHub Profile" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="mentor_github" autocomplete="url" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Portfolio -->
         <input type="url" name="portfolio" placeholder="Portfolio / Website" 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="mentor_portfolio" autocomplete="url" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- City -->
         <input type="text" name="city" placeholder="City" 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="mentor_city" autocomplete="address-level2" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- State -->
         <input type="text" name="state" placeholder="State" 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="mentor_state" autocomplete="address-level1" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
@@ -224,75 +222,74 @@
       <form action="/register" method="POST" enctype="multipart/form-data" class="space-y-3">
         <input type="hidden" name="userType" value="College" />
         <!-- File Upload -->
-        <label for="profile_pic" class="block text-white font-semibold mb-2">logo Picture</label>
-        <input type="file" name="profile_pic" accept="image/*"
+       <input type="file" id="college_profile_pic" name="profile_pic" accept="image/*" autocomplete="photo"
           class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- College Name -->
         <input type="text" name="collegeName" placeholder="College Name" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="college_collegeName" autocomplete="organization" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- College Code -->
         <input type="text" name="collegeCode" placeholder="College Code (AISE)" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="college_collegeCode" autocomplete="off" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Official College Email -->
         <input type="email" name="collegeEmail" placeholder="Official College Email" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="college_collegeEmail" autocomplete="email" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Password -->
         <input type="password" name="password" placeholder="Password" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="college_password" autocomplete="new-password" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Confirm Password -->
         <input type="password" name="confirmPassword" placeholder="Confirm Password" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="college_confirmPassword" autocomplete="new-password" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- City -->
         <input type="text" name="city" placeholder="City" 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="college_city" autocomplete="address-level2" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- State -->
         <input type="text" name="state" placeholder="State" 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="college_state" autocomplete="address-level1" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Pincode -->
         <input type="text" name="pincode" placeholder="Pincode" 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="college_pincode" autocomplete="postal-code" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Contact Person Name -->
         <input type="text" name="contactName" placeholder="Contact Person Name" 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="college_contactName" autocomplete="name" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- Contact Email -->
         <input type="email" name="contactEmail" placeholder="Contact Email" 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="college_contactEmail" autocomplete="email" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 
                  hover:scale-105 transition-all duration-300"/>
 
         <!-- College Type -->
         <select name="collegeType" required 
-          class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
+          id="college_collegeType" autocomplete="off" class="w-full bg-white/30 text-white p-3 rounded-lg border border-white/20 
                  focus:outline-none focus:ring-2 focus:ring-purple-400 hover:scale-105 transition-all duration-300">
           <option value="" class="text-gray-600">Select College Type</option>
           <option class="text-black">Engineering</option>

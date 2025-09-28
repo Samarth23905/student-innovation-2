@@ -261,9 +261,13 @@
                         return;
                     }
                     let html = '<table class="min-w-full divide-y divide-gray-700 text-sm"><thead><tr><th>Name</th><th>Email</th><th>Grades</th><th>Badges</th></tr></thead><tbody class="divide-y divide-gray-700">';
-                    data.recommended_mentees.forEach(studId => {
-                        // For demo, just show ID. In real, fetch details via AJAX or pass from backend.
-                        html += `<tr><td>${studId}</td><td>-</td><td>-</td><td>-</td></tr>`;
+                    data.recommended_mentees.forEach(stud => {
+                        html += `<tr>
+                            <td>${stud.name}</td>
+                            <td>${stud.email || '-'}</td>
+                            <td>${stud.grade || '-'}</td>
+                            <td>${stud.badge_count || '-'}</td>
+                        </tr>`;
                     });
                     html += '</tbody></table>';
                     container.innerHTML = html;

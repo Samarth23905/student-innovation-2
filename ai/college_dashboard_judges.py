@@ -1,3 +1,4 @@
+
 import sys
 import json
 # Input: { users, fests, ratings, feedbacks }
@@ -21,8 +22,12 @@ for m in mentors:
         'feedback_count': feedback_count
     }
 
-# Sort mentors by avg_rating, then feedback_count
+# Sort mentors by avg_rating, then feedback_count (prioritize ratings/feedback over experience)
 sorted_mentors = sorted(mentors, key=lambda m: (mentor_stats[m['id']]['avg_rating'], mentor_stats[m['id']]['feedback_count']), reverse=True)
+
+
+# Exclude mentors with both avg_rating and feedback_count == 0
+filtered_mentors = [m for m in sorted_mentors if mentor_stats[m['id']]['avg_rating'] > 0 or mentor_stats[m['id']]['feedback_count'] > 0]
 
 result = {
     "mentor_ranking": [
@@ -32,7 +37,7 @@ result = {
             "experience": m.get('experience', ''),
             "avg_rating": round(mentor_stats[m['id']]['avg_rating'], 2),
             "feedback_count": mentor_stats[m['id']]['feedback_count']
-        } for m in sorted_mentors[:5]
+        } for m in filtered_mentors[:5]
     ]
 }
 print(json.dumps(result))
