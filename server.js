@@ -62,7 +62,7 @@ const upload = multer({ storage: storage });
 // PostgreSQL connection
 let db;
 if (process.env.DATABASE_URL) {
-    // Use connection string for deployed environments
+    // Use connection string for deployed environments (Render, Railway, etc.)
     db = new Pool({
         connectionString: process.env.DATABASE_URL,
         ssl: { rejectUnauthorized: false } // For cloud deployments
@@ -72,7 +72,7 @@ if (process.env.DATABASE_URL) {
     db = new Pool({
         host: process.env.DB_HOST || 'localhost',
         user: process.env.DB_USER || 'postgres',
-        password: process.env.DB_PASSWORD || 'Skh@23092005',
+        password: process.env.DB_PASSWORD || '1QGEaryidPA215amou85oTAOv0tOA9eB',
         database: process.env.DB_NAME || 'student_innovation_hub',
         port: process.env.DB_PORT || 5432
     });
@@ -84,7 +84,8 @@ db.query('SELECT NOW()', (err, result) => {
         console.error('Database connection failed:', err.stack);
         return;
     }
-    console.log('Database connected successfully');
+    console.log('✅ Database connected successfully');
+    console.log(`📊 Connected to: ${process.env.DB_NAME || 'student_innovation_hub'}`);
 });
 
 // AI/ML integration
