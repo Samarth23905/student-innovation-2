@@ -3,7 +3,7 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-session": "^1.18.2",
@@ -11,6 +11,7 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.14.4",
     "nodemon": "^3.1.10",
+    "pg": "^8.17.2",
     "socket.io": "^4.8.1"
   },
   "name": "project",

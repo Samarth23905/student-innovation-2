@@ -1,9 +1,14 @@
-create database sih;
-use sih;
+-- Create database
+CREATE DATABASE student_innovation_hub;
+\c student_innovation_hub;
+
+-- Create ENUM type for userType
+CREATE TYPE user_type AS ENUM ('Student', 'Mentor', 'College');
+CREATE TYPE sender_type_enum AS ENUM ('student', 'mentor');
 
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    userType ENUM('Student', 'Mentor', 'College') NOT NULL,
+    id SERIAL PRIMARY KEY,
+    userType user_type NOT NULL,
     profile_pic VARCHAR(255),
     -- Common Fields
     fullName VARCHAR(100),
@@ -12,7 +17,7 @@ CREATE TABLE users (
     collegeName VARCHAR(100),
     city VARCHAR(100),
     state VARCHAR(100),
-    livecoding LONGTEXT,
+    livecoding TEXT,
     techStack VARCHAR(255),
     
     -- Student-specific
@@ -28,8 +33,8 @@ CREATE TABLE users (
     portfolio VARCHAR(255),
     qualification VARCHAR(255),
     bio TEXT,
-    score INT,
-    approved INT DEFAULT 0,
+    score INTEGER,
+    approved INTEGER DEFAULT 0,
 
     -- College-specific
     collegeCode VARCHAR(50),
@@ -42,11 +47,11 @@ CREATE TABLE users (
 );
 
 CREATE TABLE techfest (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     collegeName VARCHAR(255) NOT NULL,
     affiliation VARCHAR(255),
     festName VARCHAR(255) NOT NULL,
-    edition INT,
+    edition INTEGER,
     startDate DATE,
     endDate DATE,
     venue VARCHAR(255),
@@ -59,20 +64,20 @@ CREATE TABLE techfest (
     registrationLink VARCHAR(255),
     instagram VARCHAR(255),
     twitter VARCHAR(255),
-    expectedParticipants INT,
+    expectedParticipants INTEGER,
     scale VARCHAR(50),
     mode VARCHAR(50),
     description TEXT,
     brochure VARCHAR(255),
     logo VARCHAR(255),
-    events JSON,
+    events JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE studentschat (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     userName VARCHAR(100),
-    userId INT,
+    userId INTEGER,
     originalMessage TEXT,
     message TEXT,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -83,9 +88,9 @@ CREATE INDEX idx_studentschat_createdAt ON studentschat(createdAt);
 
 
 CREATE TABLE student_private_chat (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    senderId INT,
-    receiverId INT,
+    id SERIAL PRIMARY KEY,
+    senderId INTEGER,
+    receiverId INTEGER,
     message TEXT,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (senderId) REFERENCES users(id),
@@ -97,25 +102,22 @@ CREATE INDEX idx_student_private_chat_createdAt ON student_private_chat(createdA
 
 
 CREATE TABLE student_mentor (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    student_id INT,
-    mentor_id INT,
+    id SERIAL PRIMARY KEY,
+    student_id INTEGER,
+    mentor_id INTEGER,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES users(id),
-    FOREIGN KEY (mentor_id) REFERENCES users(id)
+    FOREIGN KEY (mentor_id) REFERENCES users(id),
+    UNIQUE (student_id, mentor_id)
 );
-
--- Add unique constraint to prevent duplicate mentor assignments
-ALTER TABLE student_mentor ADD UNIQUE KEY unique_student_mentor (student_id, mentor_id);
 
 
 CREATE TABLE student_mentor_chat (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    student_id INT,
-    mentor_id INT,
-    sender_type ENUM('student','mentor'),
+    id SERIAL PRIMARY KEY,
+    student_id INTEGER,
+    mentor_id INTEGER,
+    sender_type sender_type_enum,
     message TEXT,
-
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES users(id),
     FOREIGN KEY (mentor_id) REFERENCES users(id)
@@ -124,13 +126,10 @@ CREATE TABLE student_mentor_chat (
 -- Add index for faster mentor-student chat queries
 CREATE INDEX idx_student_mentor_chat_createdAt ON student_mentor_chat(createdAt);
 
--- Optionally, add foreign key to studentschat.userId for referential integrity
-ALTER TABLE studentschat ADD CONSTRAINT fk_studentschat_user FOREIGN KEY (userId) REFERENCES users(id);
-
 CREATE TABLE resources (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    mentor_id INT,
-    student_id INT,
+    id SERIAL PRIMARY KEY,
+    mentor_id INTEGER,
+    student_id INTEGER,
     title VARCHAR(255),
     description TEXT,
     file_path VARCHAR(255),
@@ -141,9 +140,9 @@ CREATE TABLE resources (
 
 
 CREATE TABLE assignments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    student_id INT,
-    mentor_id INT,
+    id SERIAL PRIMARY KEY,
+    student_id INTEGER,
+    mentor_id INTEGER,
     title VARCHAR(255),
     description TEXT,
     file_path VARCHAR(255),
@@ -153,11 +152,11 @@ CREATE TABLE assignments (
 );
 
 CREATE TABLE fest_registrations (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    fest_id INT,
+    id SERIAL PRIMARY KEY,
+    fest_id INTEGER,
     team_name VARCHAR(100),
-    team_size INT,
-    leader_id INT,
+    team_size INTEGER,
+    leader_id INTEGER,
     member1_name VARCHAR(100),
     member1_email VARCHAR(100),
     member2_name VARCHAR(100),
@@ -175,50 +174,50 @@ CREATE TABLE fest_registrations (
 );
 
 CREATE TABLE fest_judges (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    fest_id INT,
-    mentor_id INT,
+    id SERIAL PRIMARY KEY,
+    fest_id INTEGER,
+    mentor_id INTEGER,
     applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (fest_id) REFERENCES techfest(id),
     FOREIGN KEY (mentor_id) REFERENCES users(id)
 );
 
 CREATE TABLE quizzes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     question TEXT NOT NULL,
     option1 VARCHAR(255) NOT NULL,
     option2 VARCHAR(255) NOT NULL,
     option3 VARCHAR(255) NOT NULL,
     option4 VARCHAR(255) NOT NULL,
-    correct_option TINYINT NOT NULL, -- 1 to 4
+    correct_option SMALLINT NOT NULL, -- 1 to 4
     language VARCHAR(50),
-    min_score INT DEFAULT 0,
+    min_score INTEGER DEFAULT 0,
     type VARCHAR(50),
-    assigned_by INT, -- mentor id
-    assigned_to INT, -- student id (or NULL for all)
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    assigned_by INTEGER, -- mentor id
+    assigned_to INTEGER, -- student id (or NULL for all)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE quiz_attempts (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    quiz_id INT NOT NULL,
-    student_id INT NOT NULL,
-    selected_option TINYINT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    quiz_id INTEGER NOT NULL,
+    student_id INTEGER NOT NULL,
+    selected_option SMALLINT NOT NULL,
     is_correct BOOLEAN NOT NULL,
-    attempted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    score INT DEFAULT 0,
+    attempted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    score INTEGER DEFAULT 0,
     FOREIGN KEY (quiz_id) REFERENCES quizzes(id),
     FOREIGN KEY (student_id) REFERENCES users(id)
 );
 
 
 CREATE TABLE badges (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    student_id INT,
+    id SERIAL PRIMARY KEY,
+    student_id INTEGER,
     language VARCHAR(100),
     badge_name VARCHAR(100),
-    mentor_id INT DEFAULT NULL,
-    assignment_id INT DEFAULT NULL,
+    mentor_id INTEGER DEFAULT NULL,
+    assignment_id INTEGER DEFAULT NULL,
     earned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES users(id),
     FOREIGN KEY (mentor_id) REFERENCES users(id),
@@ -226,35 +225,35 @@ CREATE TABLE badges (
 );
 
 CREATE TABLE mentor_ratings (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    mentor_id INT NOT NULL,
-    student_id INT NOT NULL,
-    rating INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    mentor_id INTEGER NOT NULL,
+    student_id INTEGER NOT NULL,
+    rating INTEGER NOT NULL,
     rated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY unique_mentor_student (mentor_id, student_id),
+    UNIQUE (mentor_id, student_id),
     FOREIGN KEY (mentor_id) REFERENCES users(id),
     FOREIGN KEY (student_id) REFERENCES users(id)
 );
 
 -- Add mentor_feedback table for AI feedback storage
-CREATE TABLE IF NOT EXISTS mentor_feedback (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    mentor_id INT NOT NULL,
-    student_id INT NOT NULL,
+CREATE TABLE mentor_feedback (
+    id SERIAL PRIMARY KEY,
+    mentor_id INTEGER NOT NULL,
+    student_id INTEGER NOT NULL,
     feedback TEXT NOT NULL,
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (mentor_id) REFERENCES users(id),
     FOREIGN KEY (student_id) REFERENCES users(id),
-    UNIQUE KEY unique_mentor_feedback (mentor_id, student_id)
+    UNIQUE (mentor_id, student_id)
 );
 
 CREATE TABLE quiz_results (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    quiz_id INT NOT NULL,
-    student_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    quiz_id INTEGER NOT NULL,
+    student_id INTEGER NOT NULL,
     is_passed BOOLEAN NOT NULL,
-    attempted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    attempted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (quiz_id) REFERENCES quizzes(id),
     FOREIGN KEY (student_id) REFERENCES users(id),
-    UNIQUE KEY (quiz_id, student_id)
+    UNIQUE (quiz_id, student_id)
 );
